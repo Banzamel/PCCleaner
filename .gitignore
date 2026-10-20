@@ -7,7 +7,3 @@ logs/
 config.json
 ai/
 *.log
-
-# Strona produktu (pccleaner.banzamel.pl) ma osobne, prywatne repo - używa prywatnego
-# rejestru i licencji MineralUI Pro, więc nie może trafić do tego publicznego repo.
-/website/
