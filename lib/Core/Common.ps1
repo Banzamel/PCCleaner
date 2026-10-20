@@ -27,9 +27,8 @@ function Write-Log($t) {
 # Run logs older than $days (all of them with 0), never the current one. Registry backups stay.
 function Remove-OldLogs([int]$days = 0) {
     $cutoff = (Get-Date).AddDays(-$days)
-    # LLMCleaner_*.log - logs from before the rename (1.7.0)
-    $old = @(Get-ChildItem -LiteralPath $LogDir -Filter '*.log' -File -Force |
-            Where-Object { $_.Name -match '^(PC|LLM)Cleaner_' -and $_.FullName -ne $LogFile -and ($days -le 0 -or $_.LastWriteTime -lt $cutoff) })
+    $old = @(Get-ChildItem -LiteralPath $LogDir -Filter 'PCCleaner_*.log' -File -Force |
+            Where-Object { $_.FullName -ne $LogFile -and ($days -le 0 -or $_.LastWriteTime -lt $cutoff) })
     $n = 0
     foreach ($f in $old) { try { $f.Delete(); $n++ } catch { } }
     $n

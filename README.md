@@ -13,11 +13,6 @@ when you click **Check** on the *Drivers* page.
 
 > PC Cleaner has a **window** (default) and a **text mode** (`-Console`). The interface is in **English, Polish or Spanish**,
 > chosen in the installer, in *Settings* or from the Windows display language (`-Language en` / `pl` / `es` to override).
-
-> Until version 1.6.7 the program was called **LLMCleaner**. Installing 1.7.0 over it updates the existing
-> installation in place (same folder, AI engine and models), and the settings, history and logs move from
-> `%LOCALAPPDATA%\LLMCleaner` to `%LOCALAPPDATA%\PCCleaner` on the first start.
-
 ---
 
 ## Features

@@ -31,7 +31,7 @@ $KnownPlaces = @(
     @{ W = '\\node_modules$'; P = (L 'Zależności projektu Node.js - „npm install” odtworzy je w razie potrzeby.' 'Node.js project dependencies - "npm install" restores them when needed.') }
     @{ W = '\\\.(gradle|m2|nuget|cargo|rustup)$'; P = (L 'Cache narzędzi programistycznych.' 'Developer tool cache.') }
     @{ W = '\\(Downloads|Pobrane)$'; P = (L 'Pobrane pliki - często stare instalatory i archiwa.' 'Downloaded files - often old installers and archives.') }
-    @{ W = '\\(PC|LLM)Cleaner\\ai$'; P = (L 'Silnik AI i modele PC Cleanera.' 'The PC Cleaner AI engine and models.') }
+    @{ W = '\\PCCleaner\\ai$'; P = (L 'Silnik AI i modele PC Cleanera.' 'The PC Cleaner AI engine and models.') }
     @{ W = '\.(iso|vhdx?|vmdk|qcow2)$'; P = (L 'Obraz dysku lub maszyny wirtualnej.' 'Disk or virtual machine image.') }
 )
 function Get-PlaceHint([string]$s) { foreach ($z in $KnownPlaces) { if ($s -match $z.W) { return $z.P } }; $null }

@@ -39,7 +39,7 @@ param(
     [string]$Sid      # account that started the program (set by elevation)
 )
 
-$Version = '1.7.0'
+$Version = '1.7.1'
 $ErrorActionPreference = 'SilentlyContinue'
 $AppDir = $PSScriptRoot
 

@@ -52,9 +52,6 @@ jobs:
         run: |
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=${{ steps.version.outputs.version }}" installer\PCCleaner.iss
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          # The updater in LLMCleaner 1.6.7 and older looks for LLMCleaner-Setup-*.exe (the name before 1.7.0)
-          $v = '${{ steps.version.outputs.version }}'
-          Copy-Item "dist\PCCleaner-Setup-$v.exe" "dist\LLMCleaner-Setup-$v.exe"
 
       - name: Build portable zip
         shell: powershell

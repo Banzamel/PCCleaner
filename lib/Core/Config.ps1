@@ -5,29 +5,6 @@
 
 $ConfigFile = Join-Path $env:LOCALAPPDATA 'PCCleaner\settings.json'
 
-# Before 1.7.0 the program was called LLMCleaner and kept its data in %LOCALAPPDATA%\LLMCleaner.
-# Moves that folder (settings, window, history, logs, registry backups) over once; files that already
-# exist in the new folder win, the old folder is removed when it ends up empty.
-function Move-OldDataDir {
-    $old = Join-Path $env:LOCALAPPDATA 'LLMCleaner'
-    $new = Split-Path $ConfigFile
-    if (-not (Test-Path -LiteralPath $old)) { return }
-    if (-not (Test-Path -LiteralPath $new)) {
-        try { Move-Item -LiteralPath $old -Destination $new -ErrorAction Stop; return } catch { }
-    }
-    function Move-Missing([string]$from, [string]$to) {
-        New-Item -ItemType Directory -Force $to | Out-Null
-        foreach ($i in @(Get-ChildItem -LiteralPath $from -Force)) {
-            $target = Join-Path $to $i.Name
-            if ($i.PSIsContainer) { Move-Missing $i.FullName $target }
-            elseif (-not (Test-Path -LiteralPath $target)) { try { Move-Item -LiteralPath $i.FullName -Destination $target -ErrorAction Stop } catch { } }
-        }
-        if (-not @(Get-ChildItem -LiteralPath $from -Force).Count) { Remove-Item -LiteralPath $from -Force }
-    }
-    Move-Missing $old $new
-}
-Move-OldDataDir
-
 # Polish values saved by versions before 1.6.4 (theme and page ids)
 $OldPrefValues = @{
     jasny = 'light'; ciemny = 'dark'; przeglad = 'overview'; analiza = 'analysis'; autostart = 'startup'

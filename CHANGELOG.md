@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.1 (2026-10-20)
+
+- Removed the compatibility code for the old program name: the data folder migration, the installer cleanup of
+  old launcher files and shortcuts, and the extra installer copy under the old name in releases.
+  The program and its data now live only under the *PCCleaner* name.
+
 ## 1.7.0 (2026-10-20)
 
 - **New name: PC Cleaner** (formerly *LLMCleaner*). The window, installer, shortcuts, launcher files

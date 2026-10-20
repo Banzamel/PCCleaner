@@ -13,7 +13,6 @@
 #define AppURL "https://github.com/Banzamel/PCCleaner"
 
 [Setup]
-; Same AppId as LLMCleaner (the name before 1.7.0), so the update replaces the existing installation
 AppId={{6F3C2B1E-8A4D-4E7B-9C51-2D7E0F4A9B63}
 AppName={#AppName}
 AppVersion={#AppVersion}
@@ -23,11 +22,6 @@ AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}/issues
 AppUpdatesURL={#AppURL}/releases
 DefaultDirName={autopf}\{#AppDirName}
-; An update keeps the folder of the existing installation (e.g. ...\LLMCleaner) - moving it would
-; also mean moving the AI engine and models (several GB)
-UsePreviousAppDir=yes
-; The Start menu folder gets the new name (the old LLMCleaner one is removed in [InstallDelete])
-UsePreviousGroup=no
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
 ; Per-user install by default (no admin needed); the dialog lets the user pick "all users"
@@ -116,12 +110,6 @@ Type: files; Name: "{app}\lib\Konsola.ps1"
 Type: filesandordirs; Name: "{app}\lib\Rdzen"
 Type: filesandordirs; Name: "{app}\lib\Okno"
 Type: filesandordirs; Name: "{app}\lib\Konsola"
-; 1.7.0 renamed LLMCleaner to PC Cleaner: old launcher files and shortcuts
-Type: files; Name: "{app}\LLMCleaner.ps1"
-Type: files; Name: "{app}\LLMCleaner.bat"
-Type: files; Name: "{app}\LLMCleaner.ico"
-Type: filesandordirs; Name: "{autoprograms}\LLMCleaner"
-Type: files; Name: "{autodesktop}\LLMCleaner.lnk"
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
@@ -163,8 +151,6 @@ Type: filesandordirs; Name: "{app}\ai"
 Type: files; Name: "{app}\config.json"
 ; Logs, window settings and the .reg/.xml backups in %LOCALAPPDATA%\PCCleaner
 Type: filesandordirs; Name: "{localappdata}\{#AppDirName}"
-; ...and the folder from before the rename (1.7.0), if the program never ran after the update
-Type: filesandordirs; Name: "{localappdata}\LLMCleaner"
 
 [Code]
 var
@@ -205,18 +191,15 @@ begin
 end;
 
 // First install: the program starts in the language chosen in the installer (Settings can change it).
-// Existing settings, also the pre-1.6.4 ustawienia.json and the LLMCleaner folder from before 1.7.0
-// (the program moves it to PCCleaner on its first start), are left alone.
+// Existing settings, also the pre-1.6.4 ustawienia.json, are left alone.
 procedure CurStepChanged(CurStep: TSetupStep);
 var
-  Dir, OldDir: String;
+  Dir: String;
 begin
   if CurStep = ssPostInstall then
   begin
     Dir := ExpandConstant('{localappdata}\{#AppDirName}');
-    OldDir := ExpandConstant('{localappdata}\LLMCleaner');
-    if not FileExists(Dir + '\settings.json') and not FileExists(Dir + '\ustawienia.json') and
-      not FileExists(OldDir + '\settings.json') and not FileExists(OldDir + '\ustawienia.json') then
+    if not FileExists(Dir + '\settings.json') and not FileExists(Dir + '\ustawienia.json') then
     begin
       ForceDirectories(Dir);
       SaveStringToFile(Dir + '\settings.json', '{"Language": "' + GetLang('') + '"}', False);
