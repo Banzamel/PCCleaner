@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - window state: busy state, buttons, actions, page switching
+    PC Cleaner - window state: busy state, buttons, actions, page switching
 #>
 
 # Disables buttons while working and shows the progress bar

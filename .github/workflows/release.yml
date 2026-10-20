@@ -37,8 +37,8 @@ jobs:
         run: |
           if ($env:GITHUB_REF_TYPE -eq 'tag') {
             $v = $env:GITHUB_REF_NAME.TrimStart('v')
-            $inScript = [regex]::Match((Get-Content LLMCleaner.ps1 -Raw), "\`$Version = '([^']+)'").Groups[1].Value
-            if ($inScript -ne $v) { Write-Host "::error::Tag v$v does not match `$Version = '$inScript' in LLMCleaner.ps1"; exit 1 }
+            $inScript = [regex]::Match((Get-Content PCCleaner.ps1 -Raw), "\`$Version = '([^']+)'").Groups[1].Value
+            if ($inScript -ne $v) { Write-Host "::error::Tag v$v does not match `$Version = '$inScript' in PCCleaner.ps1"; exit 1 }
           } else {
             $v = '0.0.0-dev'
           }
@@ -50,18 +50,21 @@ jobs:
       - name: Build installer
         shell: powershell
         run: |
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=${{ steps.version.outputs.version }}" installer\LLMCleaner.iss
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=${{ steps.version.outputs.version }}" installer\PCCleaner.iss
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # The updater in LLMCleaner 1.6.7 and older looks for LLMCleaner-Setup-*.exe (the name before 1.7.0)
+          $v = '${{ steps.version.outputs.version }}'
+          Copy-Item "dist\PCCleaner-Setup-$v.exe" "dist\LLMCleaner-Setup-$v.exe"
 
       - name: Build portable zip
         shell: powershell
         run: |
           $v = '${{ steps.version.outputs.version }}'
-          $tmp = "portable\LLMCleaner"
+          $tmp = "portable\PCCleaner"
           New-Item -ItemType Directory -Force $tmp | Out-Null
-          Copy-Item LLMCleaner.ps1, LLMCleaner.bat, LLMCleaner.ico, README.md, LICENSE, installer\Install-AI.ps1 $tmp
+          Copy-Item PCCleaner.ps1, PCCleaner.bat, PCCleaner.ico, README.md, LICENSE, installer\Install-AI.ps1 $tmp
           Copy-Item lib, lang $tmp -Recurse
-          Compress-Archive -Path $tmp -DestinationPath "dist\LLMCleaner-$v-portable.zip"
+          Compress-Archive -Path $tmp -DestinationPath "dist\PCCleaner-$v-portable.zip"
           Get-ChildItem dist | ForEach-Object { "{0}  {1:N0} KB" -f $_.Name, ($_.Length / 1KB) }
 
       - name: Extract release notes
@@ -82,13 +85,13 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: LLMCleaner-${{ steps.version.outputs.version }}
+          name: PCCleaner-${{ steps.version.outputs.version }}
           path: dist/*
 
       - name: Publish GitHub release
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
-          name: LLMCleaner ${{ steps.version.outputs.version }}
+          name: PC Cleaner ${{ steps.version.outputs.version }}
           body_path: release-notes.md
           files: dist/*

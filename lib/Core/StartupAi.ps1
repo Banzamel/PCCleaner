@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - AI descriptions and advice for startup entries
+    PC Cleaner - AI descriptions and advice for startup entries
 #>
 
 # As in disk analysis: advice only from this list; for protected entries the program sets it
@@ -26,7 +26,7 @@ $StartupSchema = @{
 
 $PromptStartup = if ($Language -ne 'pl') {
     @'
-You are LLMCleaner, a Windows cleanup assistant. You get a list of programs that start when the user signs in
+You are PC Cleaner, a Windows cleanup assistant. You get a list of programs that start when the user signs in
 (name, command, publisher, source). For EACH item give:
 - "description": what the program is and why it starts with Windows - based on the name, command and publisher,
 - "advice": one of the allowed values.
@@ -40,7 +40,7 @@ Rules:
 }
 else {
     @'
-Jesteś LLMCleaner - asystentem sprzątania Windows. Dostajesz listę programów uruchamianych przy logowaniu
+Jesteś PC Cleaner - asystentem sprzątania Windows. Dostajesz listę programów uruchamianych przy logowaniu
 (nazwa, polecenie, wydawca, źródło). Dla KAŻDEJ pozycji podaj:
 - "description": czym jest program i po co startuje z Windows - na podstawie nazwy, polecenia i wydawcy,
 - "advice": jedna z dozwolonych wartości.

@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - disk analysis: what takes up space, fixed and AI advice
+    PC Cleaner - disk analysis: what takes up space, fixed and AI advice
 #>
 
 # View only - nothing here goes into the plan. The scanner is in C#, because a PowerShell loop
@@ -31,7 +31,7 @@ $KnownPlaces = @(
     @{ W = '\\node_modules$'; P = (L 'Zależności projektu Node.js - „npm install” odtworzy je w razie potrzeby.' 'Node.js project dependencies - "npm install" restores them when needed.') }
     @{ W = '\\\.(gradle|m2|nuget|cargo|rustup)$'; P = (L 'Cache narzędzi programistycznych.' 'Developer tool cache.') }
     @{ W = '\\(Downloads|Pobrane)$'; P = (L 'Pobrane pliki - często stare instalatory i archiwa.' 'Downloaded files - often old installers and archives.') }
-    @{ W = '\\LLMCleaner\\ai$'; P = (L 'Silnik AI i modele LLMCleanera.' 'The LLMCleaner AI engine and models.') }
+    @{ W = '\\(PC|LLM)Cleaner\\ai$'; P = (L 'Silnik AI i modele PC Cleanera.' 'The PC Cleaner AI engine and models.') }
     @{ W = '\.(iso|vhdx?|vmdk|qcow2)$'; P = (L 'Obraz dysku lub maszyny wirtualnej.' 'Disk or virtual machine image.') }
 )
 function Get-PlaceHint([string]$s) { foreach ($z in $KnownPlaces) { if ($s -match $z.W) { return $z.P } }; $null }
@@ -130,7 +130,7 @@ $AnalysisSchema = @{
 
 $PromptAnalysis = if ($Language -ne 'pl') {
     @'
-You are LLMCleaner, a Windows cleanup assistant. You get a list of the largest folders and files on a drive
+You are PC Cleaner, a Windows cleanup assistant. You get a list of the largest folders and files on a drive
 (path, size, last change date, sometimes a hint from the program). For EACH item give:
 - "description": what it is (program, game, user data, cache, part of Windows) - based on the path and the hint,
 - "advice": one of the allowed values - what the user can safely do.
@@ -147,7 +147,7 @@ Rules:
 }
 else {
     @'
-Jesteś LLMCleaner - asystentem sprzątania Windows. Dostajesz listę największych folderów i plików na dysku
+Jesteś PC Cleaner - asystentem sprzątania Windows. Dostajesz listę największych folderów i plików na dysku
 (ścieżka, rozmiar, data ostatniej zmiany, czasem podpowiedź programu). Dla KAŻDEJ pozycji podaj:
 - "description": czym to jest (program, gra, dane użytkownika, cache, część systemu) - na podstawie ścieżki i podpowiedzi,
 - "advice": jedna z dozwolonych wartości - co użytkownik może bezpiecznie zrobić.

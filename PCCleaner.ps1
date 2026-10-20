@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - smart Windows cleanup with a local language model (Ollama)
+    PC Cleaner - smart Windows cleanup with a local language model (Ollama)
     Started BY HAND (desktop shortcut). It never adds itself to startup.
 
     How it works:
@@ -26,7 +26,7 @@
       -Language         pl, en or es (default: Windows language; alias -Jezyk)
       -NoUpdateCheck    skips the GitHub new-version check at startup (alias -BezAktualizacji)
 
-    https://github.com/Banzamel/LLMCleaner - MIT license
+    https://github.com/Banzamel/PCCleaner - MIT license
 #>
 param(
     [Alias('Konsola')][switch]$Console,
@@ -39,7 +39,7 @@ param(
     [string]$Sid      # account that started the program (set by elevation)
 )
 
-$Version = '1.6.7'
+$Version = '1.7.0'
 $ErrorActionPreference = 'SilentlyContinue'
 $AppDir = $PSScriptRoot
 
@@ -64,7 +64,7 @@ $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIden
 ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 if (-not $isAdmin) {
-    Write-Host $(switch ($Language) { 'pl' { 'LLMCleaner wymaga uprawnień administratora - podnoszę...' } 'es' { 'LLMCleaner necesita permisos de administrador - elevando...' } default { 'LLMCleaner needs administrator rights - elevating...' } }) -ForegroundColor Yellow
+    Write-Host $(switch ($Language) { 'pl' { 'PC Cleaner wymaga uprawnień administratora - podnoszę...' } 'es' { 'PC Cleaner necesita permisos de administrador - elevando...' } default { 'PC Cleaner needs administrator rights - elevating...' } }) -ForegroundColor Yellow
     $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass')
     if (-not $Console) { $argList += '-WindowStyle', 'Hidden' }   # the window needs no console
     $argList += '-File', "`"$PSCommandPath`"", '-Model', "`"$Model`"", '-Language', $Language

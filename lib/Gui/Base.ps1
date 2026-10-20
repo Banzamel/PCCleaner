@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - window state, Windows functions (DPI, taskbar, dark title bar) and size scaling (Px)
+    PC Cleaner - window state, Windows functions (DPI, taskbar, dark title bar) and size scaling (Px)
 #>
 
 Add-Type -AssemblyName System.Windows.Forms, System.Drawing

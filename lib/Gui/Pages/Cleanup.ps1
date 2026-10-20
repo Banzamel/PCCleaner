@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - cleanup page (progress and result)
+    PC Cleaner - cleanup page (progress and result)
 #>
 
 function Initialize-Steps {
@@ -220,7 +220,7 @@ function New-CleanupPage {
     Update-CleanupHistory
 
     $cardNote = New-Card @{ Dock = 'Top'; Height = (Px 86); Padding = (New-Padding 24 16 24 14) }
-    $cardNote.Controls.Add((New-Label (L 'Postęp jest też widoczny na ikonie LLMCleanera na pasku zadań, więc okno może pracować w tle.' 'Progress is also shown on the LLMCleaner taskbar icon, so the window can work in the background.') @{ Dock = 'Fill'; ForeColor = $s.TextDim; Font = $s.Small }))
+    $cardNote.Controls.Add((New-Label (L 'Postęp jest też widoczny na ikonie PC Cleanera na pasku zadań, więc okno może pracować w tle.' 'Progress is also shown on the PC Cleaner taskbar icon, so the window can work in the background.') @{ Dock = 'Fill'; ForeColor = $s.TextDim; Font = $s.Small }))
     Add-Docked $aside @($cardResult, (New-Spacer 'Top' 16), $cardHistory, (New-Spacer 'Top' 16), $cardNote)
 
     $script:UI.Aside = $aside

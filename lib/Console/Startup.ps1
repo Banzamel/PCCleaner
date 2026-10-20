@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - startup manager
+    PC Cleaner - startup manager
 #>
 
 function Invoke-StartupConsole {

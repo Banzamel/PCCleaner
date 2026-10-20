@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - UI language and output (Write-Line, Write-Status, Wait-Responsive).
+    PC Cleaner - UI language and output (Write-Line, Write-Status, Wait-Responsive).
     The core (lib\Core) has no UI: everything the user sees goes through Write-Line/Write-Status, and the UI
     (lib\Console or lib\Gui) decides where to show it.
 #>

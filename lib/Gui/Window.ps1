@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - main window and events (Windows Forms, built into Windows). The logic is in lib\Core.
+    PC Cleaner - main window and events (Windows Forms, built into Windows). The logic is in lib\Core.
     Layout per the 1.5 mockups: dark navigation bar on the left, pages with cards (lib\Gui\Pages), owner-drawn
     lists (two text lines, type badges, size bars, toggles), cleanup progress screen.
     The window knows the screen scaling (DPI) - all pixel sizes go through Px - and the Windows theme
@@ -24,9 +24,9 @@ function Show-MainWindow {
     # Minimum size no larger than the screen (e.g. 175% on a 1920x1080 screen)
     $area = [Windows.Forms.Screen]::PrimaryScreen.WorkingArea
     $min = New-Object Drawing.Size([Math]::Min((Px 1080), $area.Width), [Math]::Min((Px 680), $area.Height))
-    $f = New-Control Form @{ Text = "LLMCleaner $Version"; MinimumSize = $min; AutoScaleMode = 'None'; Font = $s.Body; BackColor = $s.Background; KeyPreview = $true }
+    $f = New-Control Form @{ Text = "PC Cleaner $Version"; MinimumSize = $min; AutoScaleMode = 'None'; Font = $s.Body; BackColor = $s.Background; KeyPreview = $true }
     Restore-WindowBounds $f
-    $ico = Join-Path $AppDir 'LLMCleaner.ico'
+    $ico = Join-Path $AppDir 'PCCleaner.ico'
     if (Test-Path -LiteralPath $ico) { $f.Icon = New-Object Drawing.Icon $ico }
     $script:UI.Window = $f
     $f.SuspendLayout()
@@ -110,7 +110,7 @@ function Show-MainWindow {
             $lines = Get-Summary
             if (-not $lines) { Show-Message (L 'Nic nie jest zaznaczone - nie ma czego czyścić.' 'Nothing is selected - there is nothing to clean.'); return }
             $text = (($lines | ForEach-Object { $_.T -replace '\s{2,}', '  ' }) -join "`r`n") + "`r`n`r`n" + (L 'Uruchomić czyszczenie?' 'Start cleaning?')
-            $answer = [Windows.Forms.MessageBox]::Show($script:UI.Window, $text, (L 'LLMCleaner - podsumowanie przed czyszczeniem' 'LLMCleaner - summary before cleaning'), 'YesNo', 'Warning', 'Button2')
+            $answer = [Windows.Forms.MessageBox]::Show($script:UI.Window, $text, (L 'PC Cleaner - podsumowanie przed czyszczeniem' 'PC Cleaner - summary before cleaning'), 'YesNo', 'Warning', 'Button2')
             if ($answer -ne 'Yes') { return }
             Invoke-UiAction { Start-WindowCleanup }
         })
@@ -141,8 +141,8 @@ function Show-MainWindow {
             Invoke-UiAction {
                 Set-WindowStatus (L 'Asystent myśli...' 'The assistant is thinking...')
                 $a = Send-ChatQuestion $q
-                if ($a) { Add-ChatMessage 'LLMCleaner' $a $script:Style.Ai; Set-WindowStatus '' }
-                else { Add-ChatMessage 'LLMCleaner' (L '(brak odpowiedzi - szczegóły w Dzienniku)' '(no answer - see the Log)') $script:Style.TextDim }
+                if ($a) { Add-ChatMessage 'PC Cleaner' $a $script:Style.Ai; Set-WindowStatus '' }
+                else { Add-ChatMessage 'PC Cleaner' (L '(brak odpowiedzi - szczegóły w Dzienniku)' '(no answer - see the Log)') $script:Style.TextDim }
             }
             $script:UI.Question.Focus()
         })
@@ -185,7 +185,7 @@ function Show-MainWindow {
             if (-not $chosen.Count) { return }
             $list = ($chosen | ForEach-Object { "  - $($_.Name)  $($_.Version)" }) -join "`r`n"
             $text = (L "Zainstalować sterowniki z Windows Update:`r`n`r`n{0}`r`n`r`nNajpierw powstanie punkt przywracania systemu. Przy sterowniku karty graficznej ekran może na chwilę zgasnąć. Nie wyłączaj komputera w trakcie instalacji." "Install drivers from Windows Update:`r`n`r`n{0}`r`n`r`nA System Restore point is created first. With a graphics driver the screen may go blank for a moment. Do not turn off the computer while installing.") -f $list
-            $answer = [Windows.Forms.MessageBox]::Show($script:UI.Window, $text, (L 'LLMCleaner - instalacja sterowników' 'LLMCleaner - install drivers'), 'YesNo', 'Question', 'Button2')
+            $answer = [Windows.Forms.MessageBox]::Show($script:UI.Window, $text, (L 'PC Cleaner - instalacja sterowników' 'PC Cleaner - install drivers'), 'YesNo', 'Question', 'Button2')
             if ($answer -ne 'Yes') { return }
             Invoke-UiAction { Install-DriversFromWindow $chosen }
         })

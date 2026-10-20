@@ -1,18 +1,22 @@
 <p align="center">
-  <img src="docs/icon.png" width="96" alt="LLMCleaner icon">
+  <img src="docs/icon.png" width="96" alt="PC Cleaner icon">
 </p>
 
-# LLMCleaner
+# PC Cleaner
 
-**Smart Windows cleanup with a local AI assistant.** LLMCleaner finds junk files, caches and leftovers of uninstalled
+**Smart Windows cleanup with a local AI assistant.** PC Cleaner finds junk files, caches and leftovers of uninstalled
 programs and games, shows you a plan with exact sizes, and cleans only after you confirm. An optional local AI model
 explains what the leftovers were and answers your questions. The AI engine ([Ollama](https://ollama.com)) is bundled
 in the program folder, so everything runs on your machine. The only network requests are an optional update check
 against GitHub Releases (disable it with `-NoUpdateCheck`) and the driver check on Windows Update, which runs only
 when you click **Check** on the *Drivers* page.
 
-> LLMCleaner has a **window** (default) and a **text mode** (`-Console`). The interface is in **English, Polish or Spanish**,
+> PC Cleaner has a **window** (default) and a **text mode** (`-Console`). The interface is in **English, Polish or Spanish**,
 > chosen in the installer, in *Settings* or from the Windows display language (`-Language en` / `pl` / `es` to override).
+
+> Until version 1.6.7 the program was called **LLMCleaner**. Installing 1.7.0 over it updates the existing
+> installation in place (same folder, AI engine and models), and the settings, history and logs move from
+> `%LOCALAPPDATA%\LLMCleaner` to `%LOCALAPPDATA%\PCCleaner` on the first start.
 
 ---
 
@@ -59,38 +63,38 @@ when you click **Check** on the *Drivers* page.
 - **Works on other people's PCs too:**
   - Windows installed on a drive other than `C:` is supported,
   - moved user folders (Documents in OneDrive, Downloads on another drive) are found through the Windows settings,
-  - on a standard account, where UAC asks for a **different administrator's** password, LLMCleaner still cleans the
+  - on a standard account, where UAC asks for a **different administrator's** password, PC Cleaner still cleans the
     profile, registry and Recycle Bin of the person who started it, not the administrator's,
   - the AI installer picks the ARM64 engine on ARM PCs and adds AMD (ROCm) libraries when an AMD GPU is present.
 - **AI on demand.** The model never decides what gets deleted and never runs commands. It loads only when you
   ask for it: to describe what each leftover was, to describe the largest folders on a drive and suggest what to do,
   or to chat about the plan, folders and programs. AI calls run in the background, so the window stays responsive.
-- **Updates.** LLMCleaner checks GitHub Releases at start. When a new version is out, one click downloads and runs
+- **Updates.** PC Cleaner checks GitHub Releases at start. When a new version is out, one click downloads and runs
   its installer.
 
 ## Installation
 
 ### Installer (recommended)
 
-1. Download `LLMCleaner-Setup-<version>.exe` from [Releases](https://github.com/Banzamel/LLMCleaner/releases).
+1. Download `PCCleaner-Setup-<version>.exe` from [Releases](https://github.com/Banzamel/PCCleaner/releases).
 2. Run it. The wizard lets you choose:
    - the **install location** (per-user by default, no admin rights needed; choose *all users* if you prefer),
    - a **desktop shortcut**,
    - the optional **AI assistant** and its **model** (`qwen3:4b-instruct` or `qwen3:8b`). The installer downloads
      the Ollama engine (about 1.4 GB) and the model (2.5–5 GB) **into the program folder** (`ai\`).
-3. Start **LLMCleaner** from the Start menu or the desktop.
+3. Start **PC Cleaner** from the Start menu or the desktop.
 
 Everything stays inside the install folder: no separate Ollama installation, no tray icon, no autostart, no
-environment variables. The AI engine runs on a private port (`11435`) only while LLMCleaner is open, so it does not
+environment variables. The AI engine runs on a private port (`11435`) only while PC Cleaner is open, so it does not
 conflict with an Ollama you may have installed yourself. **Uninstalling removes the program, the AI engine, the
-models and `%LOCALAPPDATA%\LLMCleaner` (logs, window settings and the `.reg`/`.xml` backups).**
+models and `%LOCALAPPDATA%\PCCleaner` (logs, window settings and the `.reg`/`.xml` backups).**
 
 The installer is not code-signed, so Windows SmartScreen may show a warning on the first run
 (*More info → Run anyway*).
 
 ### Portable
 
-Download `LLMCleaner-<version>-portable.zip`, extract it anywhere and run `LLMCleaner.bat`.
+Download `PC Cleaner-<version>-portable.zip`, extract it anywhere and run `PCCleaner.bat`.
 To enable the AI assistant, run `Install-AI.ps1` from the same folder. It downloads Ollama and the model into an
 `ai` subfolder:
 
@@ -101,14 +105,14 @@ powershell -ExecutionPolicy Bypass -File Install-AI.ps1 -Model qwen3:4b-instruct
 ### Requirements
 
 - Windows 10 or 11 with Windows PowerShell 5.1 (built in).
-- Administrator rights when cleaning. LLMCleaner asks for them through UAC.
+- Administrator rights when cleaning. PC Cleaner asks for them through UAC.
 - Optional, for the AI assistant: about 4–7 GB of disk space in the install folder. An NVIDIA GPU with 6 GB of
   VRAM or more is recommended, though it also runs (slower) on the CPU.
 
 ## Usage
 
-Start **LLMCleaner** from the Start menu or the desktop. The Start menu also has *LLMCleaner (preview)*, which never
-deletes anything, and *LLMCleaner (console)* for the text mode.
+Start **PC Cleaner** from the Start menu or the desktop. The Start menu also has *PC Cleaner (preview)*, which never
+deletes anything, and *PC Cleaner (console)* for the text mode.
 
 ### The window
 
@@ -142,27 +146,27 @@ The pages are in the navigation bar on the left.
    off, the AI model, the update check at start, *always start in preview mode*, the logs (open the folder, clear
    them, delete ones older than 30 days at start), **What to scan** (each category, leftovers and large files on or
    off) and **Excluded folders**, which are never measured, listed or deleted. **Save and restart** applies them at once. They are
-   kept in `%LOCALAPPDATA%\LLMCleaner\settings.json`; command-line parameters win over them.
+   kept in `%LOCALAPPDATA%\PCCleaner\settings.json`; command-line parameters win over them.
 
 **Ctrl+1** to **Ctrl+8** switch pages. The window follows the Windows light or dark app mode (unless *Settings*
-says otherwise) and remembers its size, position and last page in `%LOCALAPPDATA%\LLMCleaner\window.json`.
+says otherwise) and remembers its size, position and last page in `%LOCALAPPDATA%\PCCleaner\window.json`.
 
 ### Parameters
 
 ```
-LLMCleaner.bat                     the window
-LLMCleaner.bat -Console            text mode (alias -Konsola)
-LLMCleaner.bat -Preview            preview: scan and plan only, nothing is deleted (alias -Podglad)
-LLMCleaner.bat -NoAI               without the AI assistant (alias -BezLLM)
-LLMCleaner.bat -Model qwen3:8b     another model
-LLMCleaner.bat -Drives C,P         pre-select these drives (alias -Dyski)
-LLMCleaner.bat -Language en        interface language: en, pl or es (alias -Jezyk)
-LLMCleaner.bat -NoUpdateCheck      no update check at start (alias -BezAktualizacji)
+PCCleaner.bat                     the window
+PCCleaner.bat -Console            text mode (alias -Konsola)
+PCCleaner.bat -Preview            preview: scan and plan only, nothing is deleted (alias -Podglad)
+PCCleaner.bat -NoAI               without the AI assistant (alias -BezLLM)
+PCCleaner.bat -Model qwen3:8b     another model
+PCCleaner.bat -Drives C,P         pre-select these drives (alias -Dyski)
+PCCleaner.bat -Language en        interface language: en, pl or es (alias -Jezyk)
+PCCleaner.bat -NoUpdateCheck      no update check at start (alias -BezAktualizacji)
 ```
 
 ### Drives
 
-LLMCleaner lists local fixed drives with a letter. USB drives, memory cards, network drives and partitions without
+PC Cleaner lists local fixed drives with a letter. USB drives, memory cards, network drives and partitions without
 a letter (EFI, Recovery) are skipped, as are BitLocker-locked volumes. All drives are ticked by default; the system
 drive is always scanned (Windows caches, user profile, Program Files). The other ticked drives are used for the
 Recycle Bin, Steam and Epic libraries, and the *what takes up space* view.
@@ -201,12 +205,12 @@ was modified in the last 30 days or is on the built-in list of system and driver
 
 | Path | Contents |
 |---|---|
-| install folder | `LLMCleaner.ps1` (start), `lib\Core\` (scanning, plan, AI, cleaning), `lib\Gui\` (window), `lib\Console\` (text mode), `LLMCleaner.bat`, `Install-AI.ps1`, `config.json` (the model chosen in the installer) |
+| install folder | `PCCleaner.ps1` (start), `lib\Core\` (scanning, plan, AI, cleaning), `lib\Gui\` (window), `lib\Console\` (text mode), `PCCleaner.bat`, `Install-AI.ps1`, `config.json` (the model chosen in the installer) |
 | `<install folder>\ai\ollama\` | the bundled Ollama engine |
 | `<install folder>\ai\models\` | AI models |
-| `%LOCALAPPDATA%\LLMCleaner\logs\` | one log per run: scan report, chosen plan, results, everything moved to the Recycle Bin |
-| `%LOCALAPPDATA%\LLMCleaner\window.json` | window size, position, last page and theme |
-| `%LOCALAPPDATA%\LLMCleaner\logs\kopie_rejestru\` | `.reg` backups of deleted registry keys and values, `.xml` backups of deleted Task Scheduler tasks |
+| `%LOCALAPPDATA%\PCCleaner\logs\` | one log per run: scan report, chosen plan, results, everything moved to the Recycle Bin |
+| `%LOCALAPPDATA%\PCCleaner\window.json` | window size, position, last page and theme |
+| `%LOCALAPPDATA%\PCCleaner\logs\kopie_rejestru\` | `.reg` backups of deleted registry keys and values, `.xml` backups of deleted Task Scheduler tasks |
 
 Logs and registry backups are kept after you uninstall the program.
 
@@ -238,7 +242,7 @@ about game studios, the model also invented titles. That is why:
 | Browser cache skipped | close the browser (also from the system tray) and run again |
 | Garbled Polish characters | the `.ps1` files must be saved as **UTF-8 with BOM** |
 | Taskbar did not come back | `Ctrl+Shift+Esc` → File → Run new task → `explorer.exe` |
-| A registry key was needed after all | double-click its `.reg` file in `logs\kopie_rejestru\`, or use the *LLMCleaner* System Restore point |
+| A registry key was needed after all | double-click its `.reg` file in `logs\kopie_rejestru\`, or use the *PC Cleaner* System Restore point |
 | A deleted scheduled task was needed after all | Task Scheduler → *Import Task...* → its `.xml` file in `logs\kopie_rejestru\` |
 | A program no longer starts with Windows | *Startup apps* page → select it → *Turn on selected* (or Task Manager → *Startup apps*) |
 | Restore point *skipped by Windows* (*pominięty przez Windows*) | Windows creates at most one restore point per 24 hours by default; the `.reg` backups are still made |
@@ -248,13 +252,13 @@ about game studios, the model also invented titles. That is why:
 
 | Folder | Contents |
 |---|---|
-| `LLMCleaner.ps1` | start: parameters, administrator rights, the list of files to load |
+| `PCCleaner.ps1` | start: parameters, administrator rights, the list of files to load |
 | `lib\Core\` | the core without any interface: user, categories, scanners, leftovers, startup apps, plan, Ollama and the AI assistant, disk analysis, updates, drivers, cleaning |
 | `lib\Gui\` | the window: theme, drawing, controls, lists, state, navigation; one file per page in `lib\Gui\Pages\` |
 | `lib\Console\` | text mode (`-Console`), one file per screen |
 | `lib\*\cs\` | C# helpers compiled with `Add-Type` (file locks, the Ollama job object, the fast disk scanner, Windows APIs for the window) |
 
-The files are dot-sourced by `LLMCleaner.ps1` in a fixed order (`$CoreFiles`, `$GuiFiles`, `$ConsoleFiles`) and share
+The files are dot-sourced by `PCCleaner.ps1` in a fixed order (`$CoreFiles`, `$GuiFiles`, `$ConsoleFiles`) and share
 its variables, so a new file has to be added to that list and to nothing else. Names, folders and comments are in English and no file is longer than
 300 lines; only the user-facing text (the `L 'pl' 'en'` pairs) is also in Polish. Other languages are in `lang\<code>.json`,
 which maps the English text to the translation; a text missing there is shown in English. The code is formatted with
@@ -274,13 +278,13 @@ Scripts must stay UTF-8 with BOM, because Windows PowerShell 5.1 reads files wit
 The installer is built by GitHub Actions on every `v*` tag (see `.github/workflows/release.yml`). To build it locally:
 
 ```powershell
-& "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=1.0.0 installer\LLMCleaner.iss
+& "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=1.0.0 installer\PCCleaner.iss
 ```
 
-To release, bump `$Wersja` in `LLMCleaner.ps1`, update `CHANGELOG.md`, then tag:
+To release, bump `$Wersja` in `PCCleaner.ps1`, update `CHANGELOG.md`, then tag:
 
 ```powershell
-git tag -a v1.0.1 -m "LLMCleaner 1.0.1"
+git tag -a v1.0.1 -m "PC Cleaner 1.0.1"
 git push origin main --tags
 ```
 

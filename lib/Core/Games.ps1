@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - leftovers of uninstalled Steam and Epic games
+    PC Cleaner - leftovers of uninstalled Steam and Epic games
 #>
 
 function Get-SteamLibraries {

@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - program paths, logs, shared state and small helpers
+    PC Cleaner - program paths, logs, shared state and small helpers
 #>
 
 $Sys = $env:SystemDrive          # usually C:, but Windows may be on another drive
@@ -14,11 +14,11 @@ $AiDir = Join-Path $AppDir 'ai'
 $OllamaExe = Join-Path $AiDir 'ollama\ollama.exe'
 $OllamaUrl = 'http://127.0.0.1:11435'
 # Logs and registry backups live outside the program folder - they survive updates and uninstall
-$LogDir = Join-Path $env:LOCALAPPDATA 'LLMCleaner\logs'
+$LogDir = Join-Path $env:LOCALAPPDATA 'PCCleaner\logs'
 $REPARSE = [IO.FileAttributes]::ReparsePoint
 
 New-Item -ItemType Directory -Force $LogDir | Out-Null
-$LogFile = Join-Path $LogDir ("LLMCleaner_{0}.log" -f (Get-Date -Format 'yyyy-MM-dd_HH-mm'))
+$LogFile = Join-Path $LogDir ("PCCleaner_{0}.log" -f (Get-Date -Format 'yyyy-MM-dd_HH-mm'))
 
 function Write-Log($t) {
     Add-Content -LiteralPath $LogFile -Value ("[{0}] {1}" -f (Get-Date -Format 'HH:mm:ss'), $t) -Encoding UTF8
@@ -27,8 +27,9 @@ function Write-Log($t) {
 # Run logs older than $days (all of them with 0), never the current one. Registry backups stay.
 function Remove-OldLogs([int]$days = 0) {
     $cutoff = (Get-Date).AddDays(-$days)
-    $old = @(Get-ChildItem -LiteralPath $LogDir -Filter 'LLMCleaner_*.log' -File -Force |
-            Where-Object { $_.FullName -ne $LogFile -and ($days -le 0 -or $_.LastWriteTime -lt $cutoff) })
+    # LLMCleaner_*.log - logs from before the rename (1.7.0)
+    $old = @(Get-ChildItem -LiteralPath $LogDir -Filter '*.log' -File -Force |
+            Where-Object { $_.Name -match '^(PC|LLM)Cleaner_' -and $_.FullName -ne $LogFile -and ($days -le 0 -or $_.LastWriteTime -lt $cutoff) })
     $n = 0
     foreach ($f in $old) { try { $f.Delete(); $n++ } catch { } }
     $n

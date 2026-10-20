@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - control builders: cards, canvases, labels, page headers
+    PC Cleaner - control builders: cards, canvases, labels, page headers
 #>
 
 # Anchor and Dock go last: an anchor stores the distances to the parent's edges when it is set,
@@ -11,7 +11,7 @@ function New-Control([string]$type, [hashtable]$props) {
     $c
 }
 
-# Icon frame as an image. LLMCleaner.ico has PNG frames, which Icon.ToBitmap() in .NET Framework can't handle.
+# Icon frame as an image. PCCleaner.ico has PNG frames, which Icon.ToBitmap() in .NET Framework can't handle.
 function Get-IconImage([string]$file, [int]$size) {
     $b = [IO.File]::ReadAllBytes($file)
     $best = $null
@@ -186,5 +186,5 @@ function New-Page {
 }
 
 function Show-Message([string]$text, [string]$icon = 'Information') {
-    [void][Windows.Forms.MessageBox]::Show($script:UI.Window, $text, 'LLMCleaner', 'OK', $icon)
+    [void][Windows.Forms.MessageBox]::Show($script:UI.Window, $text, 'PC Cleaner', 'OK', $icon)
 }

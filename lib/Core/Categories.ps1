@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - whitelist of junk categories
+    PC Cleaner - whitelist of junk categories
 #>
 
 # Size to display (categories without a measurable size show '-')

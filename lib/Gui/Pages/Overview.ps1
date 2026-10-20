@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - overview page
+    PC Cleaner - overview page
 #>
 
 function Update-Overview {
@@ -166,7 +166,7 @@ function New-OverviewPage {
     $s = $script:Style
     $page = New-Page
     $btnScan = New-Button (L 'Skanuj' 'Scan') 'outline' @{ Width = (Px 170) }
-    $n = New-PageHeader (L 'Przegląd' 'Overview') (L 'Wybierz dyski i kliknij „Skanuj”. LLMCleaner sprawdzi śmieci systemowe, cache programów i pozostałości po odinstalowanych programach i grach.' 'Pick the drives and click "Scan". LLMCleaner checks system junk, app caches and leftovers of uninstalled programs and games.') @($btnScan)
+    $n = New-PageHeader (L 'Przegląd' 'Overview') (L 'Wybierz dyski i kliknij „Skanuj”. PC Cleaner sprawdzi śmieci systemowe, cache programów i pozostałości po odinstalowanych programach i grach.' 'Pick the drives and click "Scan". PC Cleaner checks system junk, app caches and leftovers of uninstalled programs and games.') @($btnScan)
     $script:UI.OverviewDesc = $n.Description
 
     # Result card: small caption, big number, description, buttons and stat tiles on the right

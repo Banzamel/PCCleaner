@@ -1,9 +1,9 @@
 ﻿<#
-    LLMCleaner - program updates from GitHub
+    PC Cleaner - program updates from GitHub
 #>
 
 # One request to GitHub at startup (no data about the computer); -NoUpdateCheck turns it off.
-$Repo = 'Banzamel/LLMCleaner'
+$Repo = 'Banzamel/PCCleaner'
 $script:AppUpdate = $null
 
 function Find-AppUpdate {
@@ -11,10 +11,10 @@ function Find-AppUpdate {
         $r = Invoke-Background {
             param($url, $ua)
             Invoke-RestMethod $url -TimeoutSec 4 -ErrorAction Stop -Headers @{ 'User-Agent' = $ua }
-        } @("https://api.github.com/repos/$Repo/releases/latest", "LLMCleaner/$Version")
+        } @("https://api.github.com/repos/$Repo/releases/latest", "PCCleaner/$Version")
         $newVersion = [version]($r.tag_name.TrimStart('v'))
         if ($newVersion -le [version]$Version) { return }
-        $setup = $r.assets | Where-Object { $_.name -like 'LLMCleaner-Setup-*.exe' } | Select-Object -First 1
+        $setup = $r.assets | Where-Object { $_.name -like 'PCCleaner-Setup-*.exe' } | Select-Object -First 1
         $script:AppUpdate = @{ Version = "$newVersion"; Page = $r.html_url; Installer = $setup.browser_download_url; Name = $setup.name }
         Write-Log "Update available: $newVersion"
     }

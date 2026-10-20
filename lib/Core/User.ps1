@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - the user account whose profile is cleaned (also when UAC got another account's password)
+    PC Cleaner - the user account whose profile is cleaned (also when UAC got another account's password)
 #>
 
 # On a standard account UAC asks for another (administrator) account's password and the script then

@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - cleanup plan (rules, no model), report and summary
+    PC Cleaner - cleanup plan (rules, no model), report and summary
 #>
 
 # Categories: selected when they contain anything. Recycle Bin (irreversible), DNS and "manual only"

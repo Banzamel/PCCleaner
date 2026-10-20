@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - drawing: shapes, text, pills, checkboxes, toggles, buttons
+    PC Cleaner - drawing: shapes, text, pills, checkboxes, toggles, buttons
 #>
 
 function New-RoundedPath([Drawing.Rectangle]$r, [int]$radius) {

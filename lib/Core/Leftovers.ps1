@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - leftovers of uninstalled programs and games (folders, files, registry, Steam, Epic)
+    PC Cleaner - leftovers of uninstalled programs and games (folders, files, registry, Steam, Epic)
 #>
 
 function Get-ConfidenceName([string]$p) {
@@ -38,7 +38,7 @@ $SkippedNames = @('microsoft*', 'windows*', 'packages', 'temp', 'tmp', 'programs
     'hp', 'lenovo', 'asus*', 'msi', 'gigabyte', 'claude*', 'anthropic*', 'chocolatey', 'scoop', 'classes', 'policies',
     'wow6432node', 'clients', 'registeredapplications', 'odbc', 'khronos', 'partner', 'defaultuserenvironment', 'setup',
     'oem', 'appdatalow', 'description', 'hardware', 'system', 'mozillaplugins', 'chromium', 'dolby', 'waves*',
-    'conexant', 'synaptics', 'elantech', 'llmcleaner', 'ollama', 'ms-playwright', 'gtk*', 'cache', 'logs', 'crashpad',
+    'conexant', 'synaptics', 'elantech', 'pccleaner', 'llmcleaner', 'ollama', 'ms-playwright', 'gtk*', 'cache', 'logs', 'crashpad',
     'javasoft', 'steam controller configs', 'steamworks shared', '.*')
 
 function Get-NameTokens([string]$t) {

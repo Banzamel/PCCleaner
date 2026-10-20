@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - owner-drawn list (rows, sections, scrolling)
+    PC Cleaner - owner-drawn list (rows, sections, scrolling)
 #>
 
 # Scrollable list of rows of any height. A row is a hashtable with H (height), Section (group header)

@@ -1,9 +1,9 @@
 ﻿<#
-    LLMCleaner - protected folders and the main leftover scan
+    PC Cleaner - protected folders and the main leftover scan
 #>
 
 # Folder we never suggest deleting, whatever a rule found: drive root,
-# system folders in the root (Recycle Bin, System Volume Information...), Windows, profile and LLMCleaner's own folders
+# system folders in the root (Recycle Bin, System Volume Information...), Windows, profile and PC Cleaner's own folders
 $RootSystemFolders = @('$recycle.bin', 'system volume information', 'recovery', 'config.msi', 'msocache', 'perflogs',
     'boot', 'windows', 'windows.old', 'program files', 'program files (x86)', 'programdata', 'users', 'documents and settings',
     'onedrivetemp', 'intel', 'amd', 'nvidia', 'drivers', 'efi')
@@ -17,7 +17,7 @@ function Test-ProtectedFolder([string]$path) {
         $env:LOCALAPPDATA, "$env:USERPROFILE\AppData\LocalLow", (Split-Path $env:USERPROFILE -Parent), $AppDir) {
         if (-not $c) { continue }
         $c = $c.TrimEnd('\').ToLower()
-        # The protected folder itself or its parent (e.g. P:\LLMCleaner when the program is in P:\LLMCleaner\app)
+        # The protected folder itself or its parent (e.g. P:\PCCleaner when the program is in P:\PCCleaner\app)
         if ($c -eq $s -or $c.StartsWith("$s\")) { return $true }
     }
     $false

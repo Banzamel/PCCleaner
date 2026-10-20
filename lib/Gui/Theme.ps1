@@ -1,12 +1,12 @@
 ﻿<#
-    LLMCleaner - window settings (window.json), light/dark theme, color palettes and fonts
+    PC Cleaner - window settings (window.json), light/dark theme, color palettes and fonts
 #>
 
 # window.json: size, position, last page and theme ("auto", "light" or "dark")
-$script:WindowFile = Join-Path $env:LOCALAPPDATA 'LLMCleaner\window.json'
+$script:WindowFile = Join-Path $env:LOCALAPPDATA 'PCCleaner\window.json'
 # Older versions saved okno.json with Polish keys and page ids
 $oldWindowKeys = @{ Skala = 'Scale'; Strona = 'Page'; Motyw = 'Theme' }
-$prefs = Read-PrefsFile $script:WindowFile (Join-Path $env:LOCALAPPDATA 'LLMCleaner\okno.json') $oldWindowKeys
+$prefs = Read-PrefsFile $script:WindowFile (Join-Path $env:LOCALAPPDATA 'PCCleaner\okno.json') $oldWindowKeys
 $script:WindowPrefs = if ($prefs) { [pscustomobject]$prefs } else { $null }
 
 function Test-DarkTheme {

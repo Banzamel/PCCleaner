@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - headers, confirmation and exit
+    PC Cleaner - headers, confirmation and exit
 #>
 
 function Write-Header($t) {

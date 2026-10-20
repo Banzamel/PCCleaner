@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - choosing drives to scan
+    PC Cleaner - choosing drives to scan
 #>
 
 # Local fixed drives with a letter. Skipped: USB/cards (DriveType 2), network (4), CD (5), partitions without a letter

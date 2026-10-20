@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - driver updates from Windows Update
+    PC Cleaner - driver updates from Windows Update
 #>
 
 # Newer drivers from Windows Update - the same as Settings > Windows Update > Optional updates.
@@ -32,7 +32,7 @@ function Find-DriverUpdates {
     Write-Log 'Drivers: searching Windows Update'
     $found = @(Invoke-Background {
             $session = New-Object -ComObject Microsoft.Update.Session
-            $session.ClientApplicationID = 'LLMCleaner'
+            $session.ClientApplicationID = 'PC Cleaner'
             $searcher = $session.CreateUpdateSearcher()
             $searcher.ServerSelection = 2   # Windows Update, even on a computer with WSUS
             foreach ($u in $searcher.Search("IsInstalled=0 and Type='Driver' and IsHidden=0").Updates) {
@@ -100,7 +100,7 @@ function Install-Drivers($list, [hashtable]$state) {
         Invoke-Background {
             param($ids, $state)
             $session = New-Object -ComObject Microsoft.Update.Session
-            $session.ClientApplicationID = 'LLMCleaner'
+            $session.ClientApplicationID = 'PC Cleaner'
             $searcher = $session.CreateUpdateSearcher()
             $searcher.ServerSelection = 2
             $available = @{}

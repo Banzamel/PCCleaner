@@ -1,12 +1,12 @@
 ﻿<#
-    LLMCleaner - private Ollama server in the program folder
+    PC Cleaner - private Ollama server in the program folder
 #>
 
 function Test-Ollama {
     try { Invoke-RestMethod "$OllamaUrl/api/version" -TimeoutSec 2 -ErrorAction Stop | Out-Null; $true } catch { $false }
 }
 
-# Job Object with KILL_ON_JOB_CLOSE: the server (and its runner processes) dies with LLMCleaner,
+# Job Object with KILL_ON_JOB_CLOSE: the server (and its runner processes) dies with PC Cleaner,
 # also when the window is closed with the X button
 function Add-ToJob([Diagnostics.Process]$proc) {
     if (-not ('LlmJob' -as [type])) {

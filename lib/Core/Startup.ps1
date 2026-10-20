@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - dead startup entries, startup manager and AI descriptions of entries
+    PC Cleaner - dead startup entries, startup manager and AI descriptions of entries
 #>
 
 # Programs started at sign-in. Nothing is deleted here: Run and Startup folder entries are disabled
@@ -33,7 +33,7 @@ function Complete-StartupEntry([hashtable]$w) {
     $w
 }
 
-# Disabled by the user (Task Manager, Settings > Apps > Startup or LLMCleaner)
+# Disabled by the user (Task Manager, Settings > Apps > Startup or PC Cleaner)
 function Test-StartupApproved([string]$key, [string]$name) {
     $b = (Get-ItemProperty -LiteralPath "Registry::$key" -Name $name).$name
     -not ($b -is [byte[]] -and $b.Length -and ($b[0] -band 1))

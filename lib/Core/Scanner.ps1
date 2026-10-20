@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - category and disk scan, Docker, full scan
+    PC Cleaner - category and disk scan, Docker, full scan
 #>
 
 function Measure-Categories {

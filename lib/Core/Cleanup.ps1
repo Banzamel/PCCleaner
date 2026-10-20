@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - restore point and running the cleanup
+    PC Cleaner - restore point and running the cleanup
 #>
 
 # System restore point before registry changes (in addition to .reg backups). Returns a result description.
@@ -7,7 +7,7 @@ function New-RestorePoint {
     $getLast = { Get-ComputerRestorePoint | Sort-Object SequenceNumber | Select-Object -Last 1 }
     $before = & $getLast
     try {
-        Checkpoint-Computer -Description "LLMCleaner $Version" -RestorePointType MODIFY_SETTINGS -ErrorAction Stop -WarningAction SilentlyContinue
+        Checkpoint-Computer -Description "PC Cleaner $Version" -RestorePointType MODIFY_SETTINGS -ErrorAction Stop -WarningAction SilentlyContinue
     }
     catch { return @{ Ok = $false; Description = ((L 'nie utworzono ({0}) - ochrona systemu może być wyłączona' 'not created ({0}) - System Protection may be turned off') -f $_.Exception.Message.Trim()) } }
     $after = & $getLast

@@ -1,9 +1,9 @@
 ﻿<#
-    Install-AI.ps1 - installs the LLMCleaner AI assistant in the program folder:
+    Install-AI.ps1 - installs the PC Cleaner AI assistant in the program folder:
       ai\ollama\   Ollama engine (official zip, no installer, autostart or tray icon)
       ai\models\   models
     Nothing goes into the user profile or environment variables; uninstalling
-    LLMCleaner removes the whole ai\ folder.
+    PC Cleaner removes the whole ai\ folder.
 
     Called by the installer; can also be run manually (e.g. in the portable version):
       powershell -ExecutionPolicy Bypass -File Install-AI.ps1 -Model qwen3:4b-instruct
@@ -23,23 +23,23 @@ $Url = 'https://github.com/ollama/ollama/releases/latest/download'
 $Arm = $env:PROCESSOR_ARCHITECTURE -eq 'ARM64' -or $env:PROCESSOR_ARCHITEW6432 -eq 'ARM64'
 $Packages = @(if ($Arm) { 'ollama-windows-arm64.zip' } else { 'ollama-windows-amd64.zip' })
 if (-not $Arm -and (Get-CimInstance Win32_VideoController | Where-Object { $_.Name -match 'AMD|Radeon' })) { $Packages += 'ollama-windows-amd64-rocm.zip' }
-$Port = '127.0.0.1:11435'                  # same as in LLMCleaner.ps1
+$Port = '127.0.0.1:11435'                  # same as in PCCleaner.ps1
 
 $T = @{
-    en = @{ Title = 'LLMCleaner - AI assistant setup'; Dir = 'Folder'; Have = 'AI engine (Ollama) is already installed.'
+    en = @{ Title = 'PC Cleaner - AI assistant setup'; Dir = 'Folder'; Have = 'AI engine (Ollama) is already installed.'
         Down = 'Downloading the AI engine (Ollama, about 1.4 GB)'; Unpack = 'Unpacking...'; Start = 'Starting the AI engine...'
         Pull = 'Downloading model {0} (about 2.5-5 GB, this can take a while)...'; Ok = 'Done. The AI assistant is ready.'
-        Fail = 'AI setup failed: {0}'; Later = 'LLMCleaner works without AI. You can rerun this script later:'; Key = 'Press Enter to close'
+        Fail = 'AI setup failed: {0}'; Later = 'PC Cleaner works without AI. You can rerun this script later:'; Key = 'Press Enter to close'
     }
-    pl = @{ Title = 'LLMCleaner - instalacja asystenta AI'; Dir = 'Folder'; Have = 'Silnik AI (Ollama) jest już zainstalowany.'
+    pl = @{ Title = 'PC Cleaner - instalacja asystenta AI'; Dir = 'Folder'; Have = 'Silnik AI (Ollama) jest już zainstalowany.'
         Down = 'Pobieram silnik AI (Ollama, ok. 1,4 GB)'; Unpack = 'Rozpakowuję...'; Start = 'Uruchamiam silnik AI...'
         Pull = 'Pobieram model {0} (ok. 2,5-5 GB, to może chwilę potrwać)...'; Ok = 'Gotowe. Asystent AI jest gotowy.'
-        Fail = 'Instalacja AI nie powiodła się: {0}'; Later = 'LLMCleaner działa bez AI. Ten skrypt możesz uruchomić później:'; Key = 'Enter zamyka okno'
+        Fail = 'Instalacja AI nie powiodła się: {0}'; Later = 'PC Cleaner działa bez AI. Ten skrypt możesz uruchomić później:'; Key = 'Enter zamyka okno'
     }
-    es = @{ Title = 'LLMCleaner - instalación del asistente de IA'; Dir = 'Carpeta'; Have = 'El motor de IA (Ollama) ya está instalado.'
+    es = @{ Title = 'PC Cleaner - instalación del asistente de IA'; Dir = 'Carpeta'; Have = 'El motor de IA (Ollama) ya está instalado.'
         Down = 'Descargando el motor de IA (Ollama, unos 1,4 GB)'; Unpack = 'Descomprimiendo...'; Start = 'Iniciando el motor de IA...'
         Pull = 'Descargando el modelo {0} (unos 2,5-5 GB, puede tardar un rato)...'; Ok = 'Listo. El asistente de IA está preparado.'
-        Fail = 'La instalación de la IA ha fallado: {0}'; Later = 'LLMCleaner funciona sin IA. Puedes volver a ejecutar este script más tarde:'; Key = 'Pulsa Enter para cerrar'
+        Fail = 'La instalación de la IA ha fallado: {0}'; Later = 'PC Cleaner funciona sin IA. Puedes volver a ejecutar este script más tarde:'; Key = 'Pulsa Enter para cerrar'
     }
 }[$Lang]
 
@@ -106,7 +106,7 @@ try {
     & $Exe pull $Model
     if ($LASTEXITCODE -ne 0) { throw "ollama pull $Model (exit $LASTEXITCODE)" }
 
-    # Model used by LLMCleaner.ps1 when -Model is not given
+    # Model used by PCCleaner.ps1 when -Model is not given
     [IO.File]::WriteAllText((Join-Path $AppDir 'config.json'), "{ `"model`": `"$Model`" }")
 
     Write-Host ""
@@ -122,7 +122,7 @@ catch {
     Read-Host "  $($T.Key)"
 }
 finally {
-    # The server was only needed to pull the model; LLMCleaner starts it itself, on demand
+    # The server was only needed to pull the model; PC Cleaner starts it itself, on demand
     if ($server -and -not $server.HasExited) { $server.Kill(); $server.WaitForExit(5000) | Out-Null }
     Remove-Item -LiteralPath $zip -Force -ErrorAction SilentlyContinue
 }

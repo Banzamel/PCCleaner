@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - analysis page (disk analysis)
+    PC Cleaner - analysis page (disk analysis)
 #>
 
 function Draw-AnalysisRow($g, $w, $r, [bool]$hover) {

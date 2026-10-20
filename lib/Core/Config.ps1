@@ -1,9 +1,32 @@
 ﻿<#
-    LLMCleaner - program settings (Settings page in the window), file %LOCALAPPDATA%\LLMCleaner\settings.json
+    PC Cleaner - program settings (Settings page in the window), file %LOCALAPPDATA%\PCCleaner\settings.json
     Loaded at the very start, before elevation. Command-line parameters take precedence.
 #>
 
-$ConfigFile = Join-Path $env:LOCALAPPDATA 'LLMCleaner\settings.json'
+$ConfigFile = Join-Path $env:LOCALAPPDATA 'PCCleaner\settings.json'
+
+# Before 1.7.0 the program was called LLMCleaner and kept its data in %LOCALAPPDATA%\LLMCleaner.
+# Moves that folder (settings, window, history, logs, registry backups) over once; files that already
+# exist in the new folder win, the old folder is removed when it ends up empty.
+function Move-OldDataDir {
+    $old = Join-Path $env:LOCALAPPDATA 'LLMCleaner'
+    $new = Split-Path $ConfigFile
+    if (-not (Test-Path -LiteralPath $old)) { return }
+    if (-not (Test-Path -LiteralPath $new)) {
+        try { Move-Item -LiteralPath $old -Destination $new -ErrorAction Stop; return } catch { }
+    }
+    function Move-Missing([string]$from, [string]$to) {
+        New-Item -ItemType Directory -Force $to | Out-Null
+        foreach ($i in @(Get-ChildItem -LiteralPath $from -Force)) {
+            $target = Join-Path $to $i.Name
+            if ($i.PSIsContainer) { Move-Missing $i.FullName $target }
+            elseif (-not (Test-Path -LiteralPath $target)) { try { Move-Item -LiteralPath $i.FullName -Destination $target -ErrorAction Stop } catch { } }
+        }
+        if (-not @(Get-ChildItem -LiteralPath $from -Force).Count) { Remove-Item -LiteralPath $from -Force }
+    }
+    Move-Missing $old $new
+}
+Move-OldDataDir
 
 # Polish values saved by versions before 1.6.4 (theme and page ids)
 $OldPrefValues = @{
@@ -35,7 +58,7 @@ function Read-Config {
     $k = [ordered]@{ Language = 'auto'; Theme = ''; Model = ''; Assistant = $true; CheckUpdates = $true; Preview = $false
         SkipCategories = @(); ScanLeftovers = $true; ScanLargeFiles = $true; ExcludedFolders = @(); LogDays = 30 }
     $oldKeys = @{ Jezyk = 'Language'; Motyw = 'Theme'; Asystent = 'Assistant'; Aktualizacje = 'CheckUpdates'; Podglad = 'Preview' }
-    $file = Read-PrefsFile $ConfigFile (Join-Path $env:LOCALAPPDATA 'LLMCleaner\ustawienia.json') $oldKeys
+    $file = Read-PrefsFile $ConfigFile (Join-Path $env:LOCALAPPDATA 'PCCleaner\ustawienia.json') $oldKeys
     if ($file) { foreach ($n in $file.Keys) { if ($k.Contains($n) -and $null -ne $file[$n]) { $k[$n] = $file[$n] } } }
     $k
 }

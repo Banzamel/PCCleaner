@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - startup page
+    PC Cleaner - startup page
 #>
 
 $InitialColors = @('#5865F2', '#0A64AD', '#1A7F3C', '#B30B00', '#7C3AED', '#C2410C', '#0F766E', '#BE185D')
@@ -113,7 +113,7 @@ function Remove-StartupRow($a) {
     if ($script:Working -or $Preview -or $a.Protected) { return }
     $backupNote = switch ($a.Kind) { 'folder' { L 'Skrót trafi do Kosza.' 'The shortcut goes to the Recycle Bin.' } 'task' { L 'Zadanie dostanie kopię .xml (Harmonogram zadań > Importuj zadanie przywraca je).' 'The task gets an .xml backup (Task Scheduler > Import Task restores it).' } default { L 'Wpis dostanie kopię .reg (dwuklik na niej przywraca wpis).' 'The entry gets a .reg backup (double-clicking it restores the entry).' } }
     $text = (L "Usunąć z autostartu na stałe:`r`n`r`n  {0}`r`n  {1}`r`n`r`nProgram nie jest odinstalowywany, znika tylko wpis uruchamiania. {2}" "Remove from startup permanently:`r`n`r`n  {0}`r`n  {1}`r`n`r`nThe program is not uninstalled, only its startup entry is removed. {2}") -f $a.Name, $a.Command, $backupNote
-    $answer = [Windows.Forms.MessageBox]::Show($script:UI.Window, $text, (L 'LLMCleaner - usuń z autostartu' 'LLMCleaner - remove from startup'), 'YesNo', 'Question', 'Button2')
+    $answer = [Windows.Forms.MessageBox]::Show($script:UI.Window, $text, (L 'PC Cleaner - usuń z autostartu' 'PC Cleaner - remove from startup'), 'YesNo', 'Question', 'Button2')
     if ($answer -ne 'Yes') { return }
     try {
         $backupPlace = Remove-StartupEntry $a

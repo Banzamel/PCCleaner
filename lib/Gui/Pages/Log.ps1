@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - log page
+    PC Cleaner - log page
 #>
 
 function New-LogPage {

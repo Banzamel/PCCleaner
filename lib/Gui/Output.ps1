@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - core output (Write-Line, Write-Status) shown in the window
+    PC Cleaner - core output (Write-Line, Write-Status) shown in the window
 #>
 
 function Write-WindowLog([string]$t, [string]$color) {

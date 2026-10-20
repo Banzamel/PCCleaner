@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - plan page (cleanup plan): two tabs (plan, large files and folders), filter, search, sorting.
+    PC Cleaner - plan page (cleanup plan): two tabs (plan, large files and folders), filter, search, sorting.
     Rows and columns are in PlanRows.ps1.
 #>
 

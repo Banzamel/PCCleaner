@@ -1,16 +1,19 @@
-﻿; LLMCleaner - Inno Setup installer
+﻿; PC Cleaner - Inno Setup installer
 ; Built by GitHub Actions (.github/workflows/release.yml):
-;   ISCC.exe /DAppVersion=1.0.0 installer\LLMCleaner.iss
+;   ISCC.exe /DAppVersion=1.0.0 installer\PCCleaner.iss
 
 #ifndef AppVersion
   #define AppVersion "0.0.0-dev"
 #endif
 
-#define AppName "LLMCleaner"
+#define AppName "PC Cleaner"
+; Folder name without a space: install folder and %LOCALAPPDATA%\PCCleaner
+#define AppDirName "PCCleaner"
 #define AppPublisher "Banzamel"
-#define AppURL "https://github.com/Banzamel/LLMCleaner"
+#define AppURL "https://github.com/Banzamel/PCCleaner"
 
 [Setup]
+; Same AppId as LLMCleaner (the name before 1.7.0), so the update replaces the existing installation
 AppId={{6F3C2B1E-8A4D-4E7B-9C51-2D7E0F4A9B63}
 AppName={#AppName}
 AppVersion={#AppVersion}
@@ -19,18 +22,23 @@ AppPublisher={#AppPublisher}
 AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}/issues
 AppUpdatesURL={#AppURL}/releases
-DefaultDirName={autopf}\{#AppName}
+DefaultDirName={autopf}\{#AppDirName}
+; An update keeps the folder of the existing installation (e.g. ...\LLMCleaner) - moving it would
+; also mean moving the AI engine and models (several GB)
+UsePreviousAppDir=yes
+; The Start menu folder gets the new name (the old LLMCleaner one is removed in [InstallDelete])
+UsePreviousGroup=no
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
 ; Per-user install by default (no admin needed); the dialog lets the user pick "all users"
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 LicenseFile=..\LICENSE
-SetupIconFile=..\LLMCleaner.ico
-UninstallDisplayIcon={app}\LLMCleaner.ico
+SetupIconFile=..\PCCleaner.ico
+UninstallDisplayIcon={app}\PCCleaner.ico
 UninstallDisplayName={#AppName}
 OutputDir=..\dist
-OutputBaseFilename=LLMCleaner-Setup-{#AppVersion}
+OutputBaseFilename=PCCleaner-Setup-{#AppVersion}
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -51,8 +59,8 @@ english.ModelSub=The AI engine (Ollama, 1.4 GB) and the model are stored in the 
 english.Model4b=qwen3:4b-instruct - recommended, fast, fits GPUs with 6 GB VRAM (2.5 GB download)
 english.Model8b=qwen3:8b - smarter, needs about 8 GB VRAM, slower on smaller GPUs (5.2 GB download)
 english.RunAi=Setting up the AI assistant (Ollama + model)...
-english.Launch=Launch LLMCleaner
-english.LaunchPreview=Launch LLMCleaner in preview mode (nothing is deleted)
+english.Launch=Launch PC Cleaner
+english.LaunchPreview=Launch PC Cleaner in preview mode (nothing is deleted)
 english.Docs=Read the documentation
 english.ShortPreview=preview
 english.ShortConsole=console
@@ -65,8 +73,8 @@ polish.ModelSub=Silnik AI (Ollama, 1,4 GB) i model trafiają do folderu programu
 polish.Model4b=qwen3:4b-instruct - zalecany, szybki, mieści się w kartach z 6 GB VRAM (2,5 GB)
 polish.Model8b=qwen3:8b - mądrzejszy, potrzebuje ok. 8 GB VRAM, wolniejszy na słabszych kartach (5,2 GB)
 polish.RunAi=Instaluję asystenta AI (Ollama + model)...
-polish.Launch=Uruchom LLMCleaner
-polish.LaunchPreview=Uruchom LLMCleaner w trybie podglądu (nic nie zostanie usunięte)
+polish.Launch=Uruchom PC Cleaner
+polish.LaunchPreview=Uruchom PC Cleaner w trybie podglądu (nic nie zostanie usunięte)
 polish.Docs=Otwórz dokumentację
 polish.ShortPreview=podgląd
 polish.ShortConsole=konsola
@@ -79,8 +87,8 @@ spanish.ModelSub=El motor de IA (Ollama, 1,4 GB) y el modelo se guardan en la ca
 spanish.Model4b=qwen3:4b-instruct - recomendado, rápido, cabe en tarjetas con 6 GB de VRAM (descarga de 2,5 GB)
 spanish.Model8b=qwen3:8b - más listo, necesita unos 8 GB de VRAM, más lento en tarjetas pequeñas (descarga de 5,2 GB)
 spanish.RunAi=Configurando el asistente de IA (Ollama + modelo)...
-spanish.Launch=Abrir LLMCleaner
-spanish.LaunchPreview=Abrir LLMCleaner en modo de vista previa (no se elimina nada)
+spanish.Launch=Abrir PC Cleaner
+spanish.LaunchPreview=Abrir PC Cleaner en modo de vista previa (no se elimina nada)
 spanish.Docs=Leer la documentación
 spanish.ShortPreview=vista previa
 spanish.ShortConsole=consola
@@ -90,9 +98,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "ai"; Description: "{cm:AiTask}"; GroupDescription: "{cm:AiGroup}"
 
 [Files]
-Source: "..\LLMCleaner.ps1"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\LLMCleaner.bat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\LLMCleaner.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\PCCleaner.ps1"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\PCCleaner.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\PCCleaner.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Install-AI.ps1"; DestDir: "{app}"; Flags: ignoreversion
@@ -108,21 +116,27 @@ Type: files; Name: "{app}\lib\Konsola.ps1"
 Type: filesandordirs; Name: "{app}\lib\Rdzen"
 Type: filesandordirs; Name: "{app}\lib\Okno"
 Type: filesandordirs; Name: "{app}\lib\Konsola"
+; 1.7.0 renamed LLMCleaner to PC Cleaner: old launcher files and shortcuts
+Type: files; Name: "{app}\LLMCleaner.ps1"
+Type: files; Name: "{app}\LLMCleaner.bat"
+Type: files; Name: "{app}\LLMCleaner.ico"
+Type: filesandordirs; Name: "{autoprograms}\LLMCleaner"
+Type: files; Name: "{autodesktop}\LLMCleaner.lnk"
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
-  Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\LLMCleaner.ps1"""; \
-  WorkingDir: "{app}"; IconFilename: "{app}\LLMCleaner.ico"
+  Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\PCCleaner.ps1"""; \
+  WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"
 Name: "{group}\{#AppName} ({cm:ShortPreview})"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
-  Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\LLMCleaner.ps1"" -Preview"; \
-  WorkingDir: "{app}"; IconFilename: "{app}\LLMCleaner.ico"
+  Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\PCCleaner.ps1"" -Preview"; \
+  WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"
 Name: "{group}\{#AppName} ({cm:ShortConsole})"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
-  Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\LLMCleaner.ps1"" -Console"; \
-  WorkingDir: "{app}"; IconFilename: "{app}\LLMCleaner.ico"
+  Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\PCCleaner.ps1"" -Console"; \
+  WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#AppName}"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
-  Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\LLMCleaner.ps1"""; \
-  WorkingDir: "{app}"; IconFilename: "{app}\LLMCleaner.ico"; Tasks: desktopicon
+  Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\PCCleaner.ps1"""; \
+  WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"; Tasks: desktopicon
 
 [Run]
 Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
@@ -130,15 +144,15 @@ Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
   StatusMsg: "{cm:RunAi}"; Tasks: ai; Flags: waituntilterminated
 ; Two launch options on the last page: normal mode (ticked) and preview mode (nothing is deleted)
 Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
-  Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\LLMCleaner.ps1"""; \
+  Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\PCCleaner.ps1"""; \
   WorkingDir: "{app}"; Description: "{cm:Launch}"; Flags: postinstall nowait skipifsilent
 Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
-  Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\LLMCleaner.ps1"" -Preview"; \
+  Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\PCCleaner.ps1"" -Preview"; \
   WorkingDir: "{app}"; Description: "{cm:LaunchPreview}"; Flags: postinstall nowait skipifsilent unchecked
 Filename: "{#AppURL}#readme"; Description: "{cm:Docs}"; Flags: postinstall shellexec nowait skipifsilent unchecked
 
 [UninstallRun]
-; Stop the private AI server if LLMCleaner is still running, so the ai folder can be removed
+; Stop the private AI server if PC Cleaner is still running, so the ai folder can be removed
 Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
   Parameters: "-NoProfile -Command ""Get-Process ollama -ErrorAction SilentlyContinue | Where-Object Path -like '{app}\ai\*' | Stop-Process -Force"""; \
   Flags: runhidden waituntilterminated; RunOnceId: "StopAiServer"
@@ -147,8 +161,10 @@ Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
 ; Created by Install-AI.ps1: the AI engine, the models and the chosen model
 Type: filesandordirs; Name: "{app}\ai"
 Type: files; Name: "{app}\config.json"
-; Logs, window settings and the .reg/.xml backups in %LOCALAPPDATA%\LLMCleaner
-Type: filesandordirs; Name: "{localappdata}\{#AppName}"
+; Logs, window settings and the .reg/.xml backups in %LOCALAPPDATA%\PCCleaner
+Type: filesandordirs; Name: "{localappdata}\{#AppDirName}"
+; ...and the folder from before the rename (1.7.0), if the program never ran after the update
+Type: filesandordirs; Name: "{localappdata}\LLMCleaner"
 
 [Code]
 var
@@ -189,15 +205,18 @@ begin
 end;
 
 // First install: the program starts in the language chosen in the installer (Settings can change it).
-// Existing settings, also the pre-1.6.4 ustawienia.json, are left alone.
+// Existing settings, also the pre-1.6.4 ustawienia.json and the LLMCleaner folder from before 1.7.0
+// (the program moves it to PCCleaner on its first start), are left alone.
 procedure CurStepChanged(CurStep: TSetupStep);
 var
-  Dir: String;
+  Dir, OldDir: String;
 begin
   if CurStep = ssPostInstall then
   begin
-    Dir := ExpandConstant('{localappdata}\{#AppName}');
-    if not FileExists(Dir + '\settings.json') and not FileExists(Dir + '\ustawienia.json') then
+    Dir := ExpandConstant('{localappdata}\{#AppDirName}');
+    OldDir := ExpandConstant('{localappdata}\LLMCleaner');
+    if not FileExists(Dir + '\settings.json') and not FileExists(Dir + '\ustawienia.json') and
+      not FileExists(OldDir + '\settings.json') and not FileExists(OldDir + '\ustawienia.json') then
     begin
       ForceDirectories(Dir);
       SaveStringToFile(Dir + '\settings.json', '{"Language": "' + GetLang('') + '"}', False);

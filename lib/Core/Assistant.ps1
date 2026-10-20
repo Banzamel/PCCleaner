@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - AI assistant: leftover descriptions and chat
+    PC Cleaner - AI assistant: leftover descriptions and chat
 #>
 
 $AiLabel = L 'AI (może się mylić)' 'AI (may be wrong)'
@@ -18,7 +18,7 @@ $LeftoverSchema = @{
 
 $PromptLeftovers = if ($Language -ne 'pl') {
     @'
-You are LLMCleaner, a Windows cleanup assistant. You get a list of leftovers of uninstalled programs and games
+You are PC Cleaner, a Windows cleanup assistant. You get a list of leftovers of uninstalled programs and games
 (folders, files and registry keys). For EACH item write in the "description" field what the program, game or vendor was.
 Rules:
 - Rely FIRST on the "contains" field (registry subkey names - usually names of games or programs) and on the name
@@ -31,7 +31,7 @@ Rules:
 }
 else {
     @'
-Jesteś LLMCleaner - asystentem sprzątania Windows. Dostajesz listę pozostałości po odinstalowanych programach i grach
+Jesteś PC Cleaner - asystentem sprzątania Windows. Dostajesz listę pozostałości po odinstalowanych programach i grach
 (foldery, pliki i klucze rejestru). Dla KAŻDEJ pozycji napisz w polu "description", czym był ten program, gra albo producent.
 Zasady:
 - Opieraj się PRZEDE WSZYSTKIM na polu "contains" (nazwy podkluczy rejestru - zwykle to nazwy gier lub programów)
@@ -46,7 +46,7 @@ $PromptLeftovers = Convert-Prompt $PromptLeftovers @('unknown program', 'game de
 
 $PromptChat = if ($Language -ne 'pl') {
     @'
-You are LLMCleaner, a Windows cleanup assistant running locally.
+You are PC Cleaner, a Windows cleanup assistant running locally.
 Below is the scanner report and the current cleanup plan. Answer the user's questions about files, folders, programs,
 games and the plan briefly and specifically, in English. You cannot delete or run anything - the user changes the plan.
 If they want to remove something outside the plan, explain how to do it safely by hand (e.g. uninstalling a program
@@ -56,7 +56,7 @@ The report lists only the largest leftovers - "summary" says how many more there
 }
 else {
     @'
-Jesteś LLMCleaner - asystentem sprzątania systemu Windows działającym lokalnie.
+Jesteś PC Cleaner - asystentem sprzątania systemu Windows działającym lokalnie.
 Poniżej masz raport skanera i aktualny plan czyszczenia. Odpowiadaj krótko i konkretnie po polsku na pytania
 użytkownika o pliki, foldery, programy, gry i plan. Nie możesz niczego usuwać ani uruchamiać - plan zmienia
 użytkownik. Jeśli chce usunąć coś spoza planu, wyjaśnij, jak zrobić to bezpiecznie ręcznie

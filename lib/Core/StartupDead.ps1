@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - dead startup entries (programs that no longer exist)
+    PC Cleaner - dead startup entries (programs that no longer exist)
 #>
 
 # Points to a program that no longer exists. Only a certain absence counts: an absolute path on a drive

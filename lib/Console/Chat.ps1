@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - chat with the assistant
+    PC Cleaner - chat with the assistant
 #>
 
 function Invoke-ChatConsole {
@@ -12,6 +12,6 @@ function Invoke-ChatConsole {
         $q = Read-Host (L '   Ty' '   You')
         if (-not $q) { return }
         $a = Send-ChatQuestion $q
-        if ($a) { Write-Host ""; Write-Host "   LLMCleaner: $a" -ForegroundColor White }
+        if ($a) { Write-Host ""; Write-Host "   PC Cleaner: $a" -ForegroundColor White }
     }
 }

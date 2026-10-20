@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - navigation bar
+    PC Cleaner - navigation bar
 #>
 
 function New-NavigationBar {
@@ -8,13 +8,13 @@ function New-NavigationBar {
 
     # Logo and name; the version number is in the window title bar
     $logo = New-Control Panel @{ Dock = 'Top'; Height = (Px 60); BackColor = $s.NavBack }
-    $ico = Join-Path $AppDir 'LLMCleaner.ico'
+    $ico = Join-Path $AppDir 'PCCleaner.ico'
     if (Test-Path -LiteralPath $ico) {
         $pb = New-Control PictureBox @{ Location = (New-Point 6 4); Size = (New-Size 36 36); SizeMode = 'Zoom'; BackColor = $s.NavBack }
         $pb.Image = Get-IconImage $ico 48
         $logo.Controls.Add($pb)
     }
-    $logo.Controls.Add((New-Label 'LLMCleaner' @{ Location = (New-Point 48 7); Size = (New-Size 160 30); AutoSize = $false; TextAlign = 'MiddleLeft'; ForeColor = [Drawing.Color]::White; BackColor = $s.NavBack; Font = $s.Logo }))
+    $logo.Controls.Add((New-Label 'PC Cleaner' @{ Location = (New-Point 48 7); Size = (New-Size 160 30); AutoSize = $false; TextAlign = 'MiddleLeft'; ForeColor = [Drawing.Color]::White; BackColor = $s.NavBack; Font = $s.Logo }))
 
     $script:UI.Nav = [ordered]@{}
     $items = @(

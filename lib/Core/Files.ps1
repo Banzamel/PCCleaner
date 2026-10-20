@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - measuring and deleting files, lock test, previous Windows version
+    PC Cleaner - measuring and deleting files, lock test, previous Windows version
 #>
 
 # All files under a folder. Does not follow junctions or symlinks, skips folders excluded in Settings.

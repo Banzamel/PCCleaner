@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - settings page: language, theme, AI model, assistant, updates, preview mode,
+    PC Cleaner - settings page: language, theme, AI model, assistant, updates, preview mode,
     what the scan covers, excluded folders and logs
     Saved to settings.json (lib\Core\Config.ps1). Changes take effect after a restart.
 #>
@@ -184,7 +184,7 @@ function Save-SettingsPage {
 
 # The new process already has admin rights (inherited), so UAC does not ask again
 function Restart-App {
-    $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$(Join-Path $AppDir 'LLMCleaner.ps1')`"", '-Sid', $UserSid)
+    $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$(Join-Path $AppDir 'PCCleaner.ps1')`"", '-Sid', $UserSid)
     if ($PreviewFromParam) { $argList += '-Preview' }
     try { Start-Process powershell.exe -ArgumentList $argList; Write-Log 'Restarting after settings change.' }
     catch { Write-Log "Restart: $($_.Exception.Message)" }

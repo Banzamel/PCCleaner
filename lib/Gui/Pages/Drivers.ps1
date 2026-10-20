@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - drivers page
+    PC Cleaner - drivers page
 #>
 
 function Get-DriverStateColors([string]$state) {

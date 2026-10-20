@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - plan page rows: badges, columns, sorting and the full description of an item
+    PC Cleaner - plan page rows: badges, columns, sorting and the full description of an item
 #>
 
 function Get-ConfidenceStyle([string]$p) {

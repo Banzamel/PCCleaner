@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - window size, position and title bar theme
+    PC Cleaner - window size, position and title bar theme
 #>
 
 function Restore-WindowBounds($f) {

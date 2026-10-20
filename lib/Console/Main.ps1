@@ -1,11 +1,11 @@
 ﻿<#
-    LLMCleaner - main loop of the text mode
+    PC Cleaner - main loop of the text mode
 #>
 
 function Start-Console {
     Clear-Host
     Write-Host ""
-    Write-Host ((L '   LLMCleaner {0} - inteligentne czyszczenie komputera' '   LLMCleaner {0} - smart PC cleanup') -f $Version) -ForegroundColor White
+    Write-Host ((L '   PC Cleaner {0} - inteligentne czyszczenie komputera' '   PC Cleaner {0} - smart PC cleanup') -f $Version) -ForegroundColor White
     $assistant = if ($NoAI) { L 'wyłączony' 'off' } else { (L '{0} (na żądanie)' '{0} (on demand)') -f $Model }
     Write-Host ((L '   {0}   asystent: {1}' '   {0}   assistant: {1}') -f (Get-Date -Format 'dd.MM.yyyy HH:mm'), $assistant) -ForegroundColor DarkGray
     if ($Preview) { Write-Host (L '   TRYB PODGLĄDU - nic nie zostanie usunięte' '   PREVIEW MODE - nothing will be deleted') -ForegroundColor Yellow }
@@ -48,7 +48,7 @@ function Start-Console {
         if ($w -match '^[uU]$' -and $script:AppUpdate) {
             if (Install-AppUpdate) {
                 Stop-Ollama
-                Write-Host (L "`n   Instalator aktualizacji uruchomiony - LLMCleaner kończy pracę, nic nie zostało usunięte.`n" "`n   The update installer is running - LLMCleaner exits, nothing was deleted.`n") -ForegroundColor Green
+                Write-Host (L "`n   Instalator aktualizacji uruchomiony - PC Cleaner kończy pracę, nic nie zostało usunięte.`n" "`n   The update installer is running - PC Cleaner exits, nothing was deleted.`n") -ForegroundColor Green
                 Start-Sleep -Seconds 3; exit
             }
             continue

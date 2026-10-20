@@ -1,8 +1,8 @@
 ﻿<#
-    LLMCleaner - history of cleanups, %LOCALAPPDATA%\LLMCleaner\history.json (the last 20 runs)
+    PC Cleaner - history of cleanups, %LOCALAPPDATA%\PCCleaner\history.json (the last 20 runs)
 #>
 
-$HistoryFile = Join-Path $env:LOCALAPPDATA 'LLMCleaner\history.json'
+$HistoryFile = Join-Path $env:LOCALAPPDATA 'PCCleaner\history.json'
 
 # Newest first: Date, Total, FreeBefore, FreeAfter (bytes)
 function Get-CleanupHistory {

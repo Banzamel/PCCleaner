@@ -1,5 +1,5 @@
 ﻿<#
-    LLMCleaner - chat page (assistant chat)
+    PC Cleaner - chat page (assistant chat)
 #>
 
 function Add-ChatMessage([string]$who, [string]$text, $color) {

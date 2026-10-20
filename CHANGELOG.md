@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.7.0 (2026-10-20)
+
+- **New name: PC Cleaner** (formerly *LLMCleaner*). The window, installer, shortcuts, launcher files
+  (`PCCleaner.ps1`, `PCCleaner.bat`, `PCCleaner.ico`), release files (`PCCleaner-Setup-<version>.exe`,
+  `PCCleaner-<version>-portable.zip`) and the GitHub repository (`Banzamel/PCCleaner`) use the new name.
+- **Updating from LLMCleaner:** the installer keeps the same application id, so it updates the existing installation
+  instead of adding a second one. The install folder stays where it was (with the AI engine and models); the old
+  `LLMCleaner` Start menu folder, desktop shortcut and launcher files are replaced by the new ones.
+- Settings, window layout, cleanup history, logs and registry backups move from `%LOCALAPPDATA%\LLMCleaner` to
+  `%LOCALAPPDATA%\PCCleaner` on the first start, so nothing is lost. Old `LLMCleaner_*.log` files are still
+  cleaned up by the log retention setting.
+- The release also contains `LLMCleaner-Setup-<version>.exe` (the same installer), so the update button in
+  LLMCleaner 1.6.7 and older can find this version.
+
 ## 1.6.7 (2026-10-17)
 
 - **Overview:** in *Drives to scan* the free space moved to a second line under the drive name, so names such as
