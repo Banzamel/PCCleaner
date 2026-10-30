@@ -1,7 +1,8 @@
 ﻿<#
-    PC Cleaner - settings page: language, theme, AI model, assistant, updates, preview mode,
-    what the scan covers, excluded folders and logs
-    Saved to settings.json (lib\Core\Config.ps1). Changes take effect after a restart.
+    PC Cleaner - settings page: language, theme, AI model, assistant, updates, the X button, automatic cleaning,
+    preview mode, what the scan covers, excluded folders and logs
+    Saved to settings.json (lib\Core\Config.ps1). Changes take effect after a restart, except the X button
+    and the automatic cleaning task (lib\Core\AutoClean.ps1), which apply on saving.
 #>
 
 # Settings row: description on the left, control on the right
@@ -75,6 +76,7 @@ function New-ExcludedFoldersBox {
 
 $LanguageValues = @('auto', 'pl', 'en', 'es')
 $ThemeValues = @('auto', 'light', 'dark')
+$AutoCleanValues = @('off', 'logon', 'daily', 'weekly')
 
 function New-SettingsPage {
     $s = $script:Style
@@ -90,6 +92,10 @@ function New-SettingsPage {
     $chkUpdates = New-SettingsCheckBox (L 'Sprawdzaj przy starcie' 'Check at startup')
     $chkPreview = New-SettingsCheckBox (L 'Zawsze w trybie podglądu' 'Always in preview mode')
     $chkOldLogs = New-SettingsCheckBox (L 'Usuwaj starsze niż 30 dni' 'Delete ones older than 30 days')
+    $cboClose = New-SettingsList @((L 'Zamyka program' 'Closes the program'), (L 'Chowa okno do zasobnika' 'Hides the window to the tray'))
+    $cboAutoClean = New-SettingsList @((L 'Nigdy' 'Never'), (L 'Przy każdym logowaniu' 'At every sign-in'), (L 'Raz dziennie, przy logowaniu' 'Once a day, at sign-in'), (L 'Raz w tygodniu, przy logowaniu' 'Once a week, at sign-in'))
+    # The task runs as the signed-in account - with another administrator's password from UAC it would clean the wrong profile
+    $cboAutoClean.Enabled = -not $OtherUser
     $logButtons = New-Control Panel @{ Height = (Px 38) }
     $btnLogs = New-Button (L 'Otwórz folder' 'Open the folder') 'outline' @{ Dock = 'Left'; Width = (Px 145) }
     $btnLogs.Add_Click({ Start-Process explorer.exe -ArgumentList "`"$LogDir`"" })
@@ -112,6 +118,8 @@ function New-SettingsPage {
         (New-SettingsRow (L 'Asystent AI' 'AI assistant') (L 'Lokalny model opisuje pozycje i odpowiada w czacie. Wyłączony nie zajmuje pamięci.' 'The local model describes items and answers in the chat. When off it uses no memory.') $chkAi)
         (New-SettingsRow (L 'Model AI' 'AI model') (L 'Model z folderu ai\models. Inny model pobierzesz instalatorem albo Install-AI.ps1.' 'A model from the ai\models folder. Get another one with the installer or Install-AI.ps1.') $cboModel)
         (New-SettingsRow (L 'Aktualizacje' 'Updates') (L 'Jedno zapytanie do GitHuba przy starcie, bez danych o komputerze.' 'One request to GitHub at startup, with no data about this computer.') $chkUpdates)
+        (New-SettingsRow (L 'Przycisk X' 'The X button') (L 'W zasobniku program działa dalej - zamkniesz go z menu ikony.' 'In the tray it keeps running - exit it from the icon menu.') $cboClose)
+        (New-SettingsRow (L 'Automatyczne czyszczenie' 'Automatic cleaning') (L 'Po zalogowaniu czyści w tle zalecane kategorie (bez pozostałości).' 'After sign-in cleans the recommended categories (no leftovers).') $cboAutoClean)
         (New-SettingsRow (L 'Tryb podglądu' 'Preview mode') (L 'Skan i plan bez możliwości usuwania - bezpieczne do pokazania komuś programu.' 'Scan and plan without deleting anything - safe for showing the program to someone.') $chkPreview)
         (New-SettingsRow (L 'Logi' 'Logs') ((L 'Dziennik każdego uruchomienia i kopie rejestru: {0}' 'The log of every run and registry backups: {0}') -f $LogDir) $logButtons)
         (New-SettingsRow (L 'Stare logi' 'Old logs') (L 'Przy starcie usuwa dzienniki starsze niż 30 dni. Kopie rejestru zostają.' 'At startup deletes logs older than 30 days. Registry backups are kept.') $chkOldLogs)
@@ -135,6 +143,7 @@ function New-SettingsPage {
     $script:UI.SetLanguage = $cboLanguage; $script:UI.SetTheme = $cboTheme; $script:UI.SetModel = $cboModel
     $script:UI.SetAi = $chkAi; $script:UI.SetUpdates = $chkUpdates; $script:UI.SetPreview = $chkPreview
     $script:UI.SetOldLogs = $chkOldLogs; $script:UI.SetScan = $scanChecks
+    $script:UI.SetClose = $cboClose; $script:UI.SetAutoClean = $cboAutoClean
     $script:UI.BtnSettingsSave = $btnSave; $script:UI.BtnSettingsRestart = $btnRestart; $script:UI.SetInfo = $info
     Update-SettingsPage
 
@@ -153,6 +162,8 @@ function Update-SettingsPage {
     $u.SetUpdates.Checked = $k.CheckUpdates -ne $false
     $u.SetPreview.Checked = $k.Preview -eq $true
     $u.SetOldLogs.Checked = [int]$k.LogDays -gt 0
+    $u.SetClose.SelectedIndex = $(if ($k.CloseToTray -eq $true) { 1 } else { 0 })
+    $u.SetAutoClean.SelectedIndex = [Math]::Max(0, [array]::IndexOf($AutoCleanValues, "$($k.AutoClean)"))
     foreach ($c in $u.SetScan.Controls) {
         $c.Checked = switch ($c.Tag) { '#leftovers' { $k.ScanLeftovers -ne $false } '#large' { $k.ScanLargeFiles -ne $false } default { $c.Tag -notin @($k.SkipCategories) } }
     }
@@ -178,8 +189,15 @@ function Save-SettingsPage {
     $here = @($u.SetScan.Controls | ForEach-Object { $_.Tag })
     $Config.SkipCategories = @(@($Config.SkipCategories | Where-Object { $_ -notin $here }) + $skip)
     $Config.ExcludedFolders = @($u.SetExcluded.Lines | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+    $Config.CloseToTray = $u.SetClose.SelectedIndex -eq 1
+    $Config.AutoClean = $AutoCleanValues[[Math]::Max(0, $u.SetAutoClean.SelectedIndex)]
     try { Save-Config $Config; Write-Log "Settings saved: $(ConvertTo-Json -InputObject $Config -Compress)" }
     catch { Write-Log "Saving settings: $($_.Exception.Message)"; Show-Message ((L 'Nie udało się zapisać ustawień: {0}' 'Could not save the settings: {0}') -f $_.Exception.Message) 'Error' }
+    # The Task Scheduler task changes at once, not after a restart
+    if (-not $OtherUser) {
+        $err = Set-AutoCleanTask
+        if ($err) { Show-Message ((L 'Nie udało się ustawić automatycznego czyszczenia: {0}' 'Could not set up the automatic cleaning: {0}') -f $err) 'Error' }
+    }
 }
 
 # The new process already has admin rights (inherited), so UAC does not ask again

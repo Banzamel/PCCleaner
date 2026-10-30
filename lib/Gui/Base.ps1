@@ -24,6 +24,9 @@ if (-not ('LlmWin.Native' -as [type])) {
 # when fonts were created before SetProcessDPIAware, sizes (Px) and text boxes were computed for 100%
 # while labels were drawn for 125-200% - text overlapped and got clipped, and the chat was tiny.
 [void][LlmWin.Native]::SetProcessDPIAware()
+# Taskbar button with the PC Cleaner icon (the same id as the installer's shortcuts, so pinning works)
+$AppUserModelId = 'Banzamel.PCCleaner'
+[void][LlmWin.Native]::SetCurrentProcessExplicitAppUserModelID($AppUserModelId)
 $script:Scale = [Math]::Max(1.0, [LlmWin.Native]::ScreenDpi() / 96.0)
 
 function ConvertTo-Color([string]$hex) { [Drawing.ColorTranslator]::FromHtml($hex) }

@@ -15,6 +15,8 @@ namespace LlmWin {
         [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int n);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern IntPtr SendMessage(IntPtr h, int msg, IntPtr w, string l);
         [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
+        // Own taskbar identity: without it the window is grouped with powershell.exe and shows its icon
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)] public static extern int SetCurrentProcessExplicitAppUserModelID(string id);
         [DllImport("user32.dll")] static extern IntPtr GetDC(IntPtr h);
         [DllImport("user32.dll")] static extern int ReleaseDC(IntPtr h, IntPtr dc);
         [DllImport("gdi32.dll")] static extern int GetDeviceCaps(IntPtr dc, int i);

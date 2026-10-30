@@ -36,6 +36,11 @@ when you click **Check** on the *Drivers* page.
   Task Manager, so nothing is removed and it can be turned back on. Security software, drivers, hardware panels,
   updaters and parts of Windows are read-only. The AI can describe each program and suggest whether it needs to start
   with Windows.
+- **Automatic cleaning (optional, off by default).** In *Settings* you can let PC Cleaner clean at every sign-in, once
+  a day or once a week. A Task Scheduler task of your account starts it with administrator rights about two minutes
+  after you sign in; it runs in the notification area, cleans only the categories the plan recommends (never leftovers
+  or large files) and shows the freed space in a notification. Click it to open the window; otherwise the program
+  closes itself. Preview mode only reports what would be cleaned. Turning the option off removes the task.
 - **Driver updates.** The *Drivers* page looks for newer drivers for this PC's devices on Windows Update (the same
   signed drivers as the optional updates in Settings), shows the current and new version of each, and installs the
   ones you tick after a System Restore point. It also lists devices with a problem in Device Manager.
@@ -79,8 +84,9 @@ when you click **Check** on the *Drivers* page.
      the Ollama engine (about 1.4 GB) and the model (2.5–5 GB) **into the program folder** (`ai\`).
 3. Start **PC Cleaner** from the Start menu or the desktop.
 
-Everything stays inside the install folder: no separate Ollama installation, no tray icon, no autostart, no
-environment variables. The AI engine runs on a private port (`11435`) only while PC Cleaner is open, so it does not
+Everything stays inside the install folder: no separate Ollama installation, no background service, no
+environment variables. A tray icon and an autostart task appear only when you turn them on in *Settings* (the X button
+hiding to the tray, automatic cleaning); the uninstaller removes the task. The AI engine runs on a private port (`11435`) only while PC Cleaner is open, so it does not
 conflict with an Ollama you may have installed yourself. **Uninstalling removes the program, the AI engine, the
 models and `%LOCALAPPDATA%\PCCleaner` (logs, window settings and the `.reg`/`.xml` backups).**
 
@@ -138,7 +144,9 @@ The pages are in the navigation bar on the left.
 6. **AI assistant**: ask about the plan, folders, programs or games (general questions work before a scan too).
 7. **Log**: everything the program does, also written to the log file.
 8. **Settings**: language (Polish, English, Spanish), theme (light, dark or as in Windows), the AI assistant on or
-   off, the AI model, the update check at start, *always start in preview mode*, the logs (open the folder, clear
+   off, the AI model, the update check at start, **the X button** (closes the program or hides the window to the
+   notification area; *Exit* in the tray icon menu closes it), **automatic cleaning** (never, at every sign-in, once a
+   day or once a week; applied as soon as you save), *always start in preview mode*, the logs (open the folder, clear
    them, delete ones older than 30 days at start), **What to scan** (each category, leftovers and large files on or
    off) and **Excluded folders**, which are never measured, listed or deleted. **Save and restart** applies them at once. They are
    kept in `%LOCALAPPDATA%\PCCleaner\settings.json`; command-line parameters win over them.
@@ -157,6 +165,7 @@ PCCleaner.bat -Model qwen3:8b     another model
 PCCleaner.bat -Drives C,P         pre-select these drives (alias -Dyski)
 PCCleaner.bat -Language en        interface language: en, pl or es (alias -Jezyk)
 PCCleaner.bat -NoUpdateCheck      no update check at start (alias -BezAktualizacji)
+PCCleaner.bat -AutoClean          automatic cleaning, as started by the Settings task at sign-in
 ```
 
 ### Drives
@@ -205,6 +214,8 @@ was modified in the last 30 days or is on the built-in list of system and driver
 | `<install folder>\ai\models\` | AI models |
 | `%LOCALAPPDATA%\PCCleaner\logs\` | one log per run: scan report, chosen plan, results, everything moved to the Recycle Bin |
 | `%LOCALAPPDATA%\PCCleaner\window.json` | window size, position, last page and theme |
+| `%LOCALAPPDATA%\PCCleaner\settings.json` | the *Settings* page, including the date of the last automatic cleaning |
+| Task Scheduler: `PC Cleaner - automatic cleaning` | only when automatic cleaning is on in *Settings* |
 | `%LOCALAPPDATA%\PCCleaner\logs\kopie_rejestru\` | `.reg` backups of deleted registry keys and values, `.xml` backups of deleted Task Scheduler tasks |
 
 Logs and registry backups are kept after you uninstall the program.

@@ -112,19 +112,20 @@ Type: filesandordirs; Name: "{app}\lib\Okno"
 Type: filesandordirs; Name: "{app}\lib\Konsola"
 
 [Icons]
+; The window sets the same AppUserModelID - the taskbar shows the PC Cleaner icon and pins the shortcut
 Name: "{group}\{#AppName}"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
   Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\PCCleaner.ps1"""; \
-  WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"
+  WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"; AppUserModelID: "Banzamel.PCCleaner"
 Name: "{group}\{#AppName} ({cm:ShortPreview})"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
   Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\PCCleaner.ps1"" -Preview"; \
-  WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"
+  WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"; AppUserModelID: "Banzamel.PCCleaner"
 Name: "{group}\{#AppName} ({cm:ShortConsole})"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
   Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\PCCleaner.ps1"" -Console"; \
   WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#AppName}"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
   Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\PCCleaner.ps1"""; \
-  WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"; Tasks: desktopicon
+  WorkingDir: "{app}"; IconFilename: "{app}\PCCleaner.ico"; AppUserModelID: "Banzamel.PCCleaner"; Tasks: desktopicon
 
 [Run]
 Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
@@ -144,6 +145,10 @@ Filename: "{#AppURL}#readme"; Description: "{cm:Docs}"; Flags: postinstall shell
 Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
   Parameters: "-NoProfile -Command ""Get-Process ollama -ErrorAction SilentlyContinue | Where-Object Path -like '{app}\ai\*' | Stop-Process -Force"""; \
   Flags: runhidden waituntilterminated; RunOnceId: "StopAiServer"
+; Remove the automatic cleaning task (Settings) of the account that uninstalls
+Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; \
+  Parameters: "-NoProfile -Command ""Unregister-ScheduledTask -TaskName 'PC Cleaner - automatic cleaning' -Confirm:$false -ErrorAction SilentlyContinue"""; \
+  Flags: runhidden waituntilterminated; RunOnceId: "RemoveAutoCleanTask"
 
 [UninstallDelete]
 ; Created by Install-AI.ps1: the AI engine, the models and the chosen model

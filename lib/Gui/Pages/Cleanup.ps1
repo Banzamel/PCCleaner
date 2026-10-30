@@ -181,7 +181,7 @@ function Start-WindowCleanup {
     Update-Overview
     Update-PlanPage
     Set-WindowStatus (L 'Czyszczenie zakończone. Kliknij „Skanuj ponownie”, żeby zobaczyć aktualny stan.' 'Cleaning finished. Click "Scan again" to see the current state.')
-    if ($script:UI.Window.WindowState -eq 'Minimized') { $script:UI.Window.WindowState = 'Normal' }
+    if ($script:UI.Window.Visible -and $script:UI.Window.WindowState -eq 'Minimized') { $script:UI.Window.WindowState = 'Normal' }
 }
 
 function New-CleanupPage {

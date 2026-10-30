@@ -30,10 +30,13 @@ function Read-PrefsFile([string]$file, [string]$oldFile, [hashtable]$oldKeys) {
 
 # Fields: Language (auto/pl/en/es), Theme (auto/light/dark), Model, Assistant, CheckUpdates, Preview,
 # scan scope: SkipCategories (category ids), ScanLeftovers, ScanLargeFiles, ExcludedFolders (paths);
-# LogDays - run logs older than that are deleted at startup (0 = keep all)
+# LogDays - run logs older than that are deleted at startup (0 = keep all);
+# CloseToTray - the X button hides the window to the notification area;
+# AutoClean (off/logon/daily/weekly) - cleaning at sign-in (lib\Core\AutoClean.ps1), AutoCleanLast - date of the last one
 function Read-Config {
     $k = [ordered]@{ Language = 'auto'; Theme = ''; Model = ''; Assistant = $true; CheckUpdates = $true; Preview = $false
-        SkipCategories = @(); ScanLeftovers = $true; ScanLargeFiles = $true; ExcludedFolders = @(); LogDays = 30 }
+        SkipCategories = @(); ScanLeftovers = $true; ScanLargeFiles = $true; ExcludedFolders = @(); LogDays = 30
+        CloseToTray = $false; AutoClean = 'off'; AutoCleanLast = '' }
     $oldKeys = @{ Jezyk = 'Language'; Motyw = 'Theme'; Asystent = 'Assistant'; Aktualizacje = 'CheckUpdates'; Podglad = 'Preview' }
     $file = Read-PrefsFile $ConfigFile (Join-Path $env:LOCALAPPDATA 'PCCleaner\ustawienia.json') $oldKeys
     if ($file) { foreach ($n in $file.Keys) { if ($k.Contains($n) -and $null -ne $file[$n]) { $k[$n] = $file[$n] } } }
@@ -43,6 +46,18 @@ function Read-Config {
 function Save-Config($k) {
     New-Item -ItemType Directory -Force (Split-Path $ConfigFile) | Out-Null
     [IO.File]::WriteAllText($ConfigFile, (ConvertTo-Json -InputObject $k), (New-Object Text.UTF8Encoding $false))
+}
+
+# Automatic cleaning at sign-in: is it time for the next one (daily/weekly count from the last one)
+function Test-AutoCleanDue($k) {
+    $last = [datetime]::MinValue
+    [void][datetime]::TryParseExact("$($k.AutoCleanLast)", 'yyyy-MM-dd', $null, 'None', [ref]$last)
+    switch ("$($k.AutoClean)") {
+        'logon' { $true }
+        'daily' { $last.Date -lt (Get-Date).Date }
+        'weekly' { $last.Date -le (Get-Date).Date.AddDays(-7) }
+        default { $false }
+    }
 }
 
 # Model chosen in the installer (config.json next to the script) or the default

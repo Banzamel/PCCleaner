@@ -29,6 +29,9 @@ function Show-MainWindow {
     $ico = Join-Path $AppDir 'PCCleaner.ico'
     if (Test-Path -LiteralPath $ico) { $f.Icon = New-Object Drawing.Icon $ico }
     $script:UI.Window = $f
+    New-TrayIcon
+    # Automatic cleaning at sign-in starts in the tray (Shown hides the window)
+    if ($AutoClean) { $script:TrayState = "$($f.WindowState)"; $f.WindowState = 'Minimized' }
     $f.SuspendLayout()
 
     # Pages (all Fill, one visible) and the status bar below them
@@ -50,48 +53,7 @@ function Show-MainWindow {
         $u.BtnDriverCheck, $u.BtnDriverInstall, $u.BtnSettingsSave, $u.BtnSettingsRestart)
 
     # ---------- EVENTS ----------
-    $u.BtnScan.Add_Click({ Invoke-UiAction {
-                Set-SelectedDrives @($script:UI.DriveList.Tag.Rows | Where-Object { $_.Obj.Ticked } | ForEach-Object { $_.Obj.Id })
-                Show-Page 'overview'
-                $script:UI.Log.Clear()
-                $script:UI.Stats.Visible = $false
-                $script:UI.BtnStart.Visible = $script:UI.BtnToPlan.Visible = $script:UI.BtnCleanNow.Visible = $false
-                $script:UI.ResultSmall.Text = L 'Trwa skan - niczego nie usuwa' 'Scanning - nothing is deleted'
-                $script:UI.Result.Text = L 'Skanowanie...' 'Scanning...'
-                $script:UI.Result.ForeColor = $script:Style.Text
-                $script:UI.Scanning = $true
-                Set-TaskbarProgress 1
-                $ok = $false
-                try {
-                    Write-WindowLog ((L '1/2  Skanowanie dysków: {0}' '1/2  Scanning drives: {0}') -f ($script:SelectedDrives -join ', ')) 'Cyan'
-                    Invoke-FullScan
-                    $ok = $true
-                }
-                finally {
-                    $script:UI.Scanning = $false
-                    Set-TaskbarProgress 0
-                    if (-not $ok) {
-                        $script:UI.Result.Text = L 'Skan nie powiódł się' 'The scan failed'
-                        $script:UI.Result.ForeColor = $script:Style.Red
-                        $script:UI.Stage.Text = L 'Szczegóły są w Dzienniku.' 'See the Log for details.'
-                    }
-                }
-                $script:Scanned = $true
-                $script:Cleaned = $false
-                $script:CleanupResult = $null
-                $script:Conversation = $null
-                $script:UI.OverviewDesc.Text = (L 'Ostatni skan: dziś, {0} · dyski {1} · nic nie zostało jeszcze usunięte' 'Last scan: today, {0} · drives {1} · nothing has been deleted yet') -f (Get-Date -Format 'HH:mm'), ($script:SelectedDrives -join ', ')
-                # Startup entries for the overview tile (a few seconds, read-only)
-                if ($null -eq $script:Startup) {
-                    Set-WindowStatus (L 'Wczytuję programy uruchamiane przy logowaniu...' 'Reading the programs that start at sign-in...')
-                    try { [void](Get-StartupEntries); Update-StartupPage } catch { Add-ScanError 'startup' $_ }
-                }
-                Update-PlanPage
-                $script:UI.CboDrive.Items.Clear()
-                foreach ($d in Get-SelectedDrives) { [void]$script:UI.CboDrive.Items.Add((Format-Drive $d)) }
-                $script:UI.CboDrive.SelectedIndex = 0
-                Set-WindowStatus ((L 'Skan zakończony. Sprawdź plan i kliknij „Wyczyść zaznaczone...”.' 'Scan finished. Review the plan and click "Clean selected...".'))
-            } })
+    $u.BtnScan.Add_Click({ Invoke-UiAction { Start-WindowScan } })
 
     $u.BtnStart.Add_Click({ $script:UI.BtnScan.PerformClick() })
     $u.BtnToPlan.Add_Click({ Show-Page 'plan' })
@@ -191,7 +153,7 @@ function Show-MainWindow {
         })
 
     $u.BtnUpdate.Add_Click({ Invoke-UiAction {
-                if (Install-AppUpdate) { $script:UI.Window.Close() }
+                if (Install-AppUpdate) { Exit-App }
             } })
 
     # Shortcuts: F5 scans, Ctrl+1..7 switches pages
@@ -233,9 +195,13 @@ function Show-MainWindow {
             }
             # Tests only: set by the test script in the same process (never from environment variables)
             if ($script:TestAfterStart) { & $script:TestAfterStart }
+            if ($AutoClean) { Hide-ToTray $true; Invoke-AutoClean }
         })
-    # The window does not close during cleanup (Windows Update services, Explorer, half-deleted files)
+    # The X button may hide the window to the tray (Settings). The program does not close during cleanup
+    # (Windows Update services, Explorer, half-deleted files).
     $f.Add_FormClosing({
+            if (Test-CloseToTray $_) { $_.Cancel = $true; Hide-ToTray; return }
+            if ($script:InstallingDrivers -or $script:Cleaning) { $script:Exiting = $false }
             if ($script:InstallingDrivers) {
                 $_.Cancel = $true
                 Show-Message (L 'Poczekaj na koniec instalacji sterowników.' 'Wait for the driver installation to finish.') 'Warning'
@@ -248,10 +214,55 @@ function Show-MainWindow {
             }
             Save-WindowState
         })
-    $f.Add_FormClosed({ Stop-Ollama; Write-Log 'End (window).' })
+    $f.Add_FormClosed({ $script:UI.Tray.Visible = $false; $script:UI.Tray.Dispose(); Stop-Ollama; Write-Log 'End (window).' })
 
     Write-Log "Start (window). Model: $Model, Preview: $Preview, NoAI: $NoAI, Language: $Language, Scale: $($script:Scale) (GDI+ $($script:DpiGdiPlus) dpi), Dark: $($script:Dark)"
-    [void]$f.ShowDialog()
+    # Application.Run, not ShowDialog: hiding a modal window to the tray would end it
+    [Windows.Forms.Application]::Run($f)
     # "Save and restart" on the settings page - the new window starts after window.json is saved
     if ($script:Restart) { Restart-App }
+}
+
+# Scan button: drives ticked on the overview, full scan, plan (also used by the automatic cleaning)
+function Start-WindowScan {
+    Set-SelectedDrives @($script:UI.DriveList.Tag.Rows | Where-Object { $_.Obj.Ticked } | ForEach-Object { $_.Obj.Id })
+    Show-Page 'overview'
+    $script:UI.Log.Clear()
+    $script:UI.Stats.Visible = $false
+    $script:UI.BtnStart.Visible = $script:UI.BtnToPlan.Visible = $script:UI.BtnCleanNow.Visible = $false
+    $script:UI.ResultSmall.Text = L 'Trwa skan - niczego nie usuwa' 'Scanning - nothing is deleted'
+    $script:UI.Result.Text = L 'Skanowanie...' 'Scanning...'
+    $script:UI.Result.ForeColor = $script:Style.Text
+    $script:UI.Scanning = $true
+    Set-TaskbarProgress 1
+    $ok = $false
+    try {
+        Write-WindowLog ((L '1/2  Skanowanie dysków: {0}' '1/2  Scanning drives: {0}') -f ($script:SelectedDrives -join ', ')) 'Cyan'
+        Invoke-FullScan
+        $ok = $true
+    }
+    finally {
+        $script:UI.Scanning = $false
+        Set-TaskbarProgress 0
+        if (-not $ok) {
+            $script:UI.Result.Text = L 'Skan nie powiódł się' 'The scan failed'
+            $script:UI.Result.ForeColor = $script:Style.Red
+            $script:UI.Stage.Text = L 'Szczegóły są w Dzienniku.' 'See the Log for details.'
+        }
+    }
+    $script:Scanned = $true
+    $script:Cleaned = $false
+    $script:CleanupResult = $null
+    $script:Conversation = $null
+    $script:UI.OverviewDesc.Text = (L 'Ostatni skan: dziś, {0} · dyski {1} · nic nie zostało jeszcze usunięte' 'Last scan: today, {0} · drives {1} · nothing has been deleted yet') -f (Get-Date -Format 'HH:mm'), ($script:SelectedDrives -join ', ')
+    # Startup entries for the overview tile (a few seconds, read-only)
+    if ($null -eq $script:Startup) {
+        Set-WindowStatus (L 'Wczytuję programy uruchamiane przy logowaniu...' 'Reading the programs that start at sign-in...')
+        try { [void](Get-StartupEntries); Update-StartupPage } catch { Add-ScanError 'startup' $_ }
+    }
+    Update-PlanPage
+    $script:UI.CboDrive.Items.Clear()
+    foreach ($d in Get-SelectedDrives) { [void]$script:UI.CboDrive.Items.Add((Format-Drive $d)) }
+    $script:UI.CboDrive.SelectedIndex = 0
+    Set-WindowStatus ((L 'Skan zakończony. Sprawdź plan i kliknij „Wyczyść zaznaczone...”.' 'Scan finished. Review the plan and click "Clean selected...".'))
 }

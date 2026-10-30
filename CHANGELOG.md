@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.8.0 (2026-10-30)
+
+- **Taskbar icon:** the window has its own taskbar identity, so the taskbar shows the PC Cleaner icon instead of the
+  PowerShell one. The installer's shortcuts carry the same identity, so pinning the running window pins PC Cleaner.
+- **Settings → The X button:** closes the program (as before) or hides the window to the notification area. A click
+  on the tray icon brings it back; *Exit* in its menu closes the program. Applied as soon as you save.
+- **Settings → Automatic cleaning:** never (default), at every sign-in, once a day or once a week. A Task Scheduler
+  task of your account starts PC Cleaner with administrator rights two minutes after sign-in, without the window: it
+  scans, cleans only the categories the plan recommends (never leftovers or large files) and shows the freed space in
+  a notification. In preview mode it only reports what would be cleaned. The task is created or removed when you
+  save, and the uninstaller removes it.
+- New parameter `-AutoClean` (used by that task).
+
 ## 1.7.1 (2026-10-20)
 
 - Removed the compatibility code for the old program name: the data folder migration, the installer cleanup of

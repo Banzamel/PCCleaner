@@ -1,6 +1,7 @@
 ﻿<#
     PC Cleaner - smart Windows cleanup with a local language model (Ollama)
-    Started BY HAND (desktop shortcut). It never adds itself to startup.
+    Started BY HAND (desktop shortcut). It adds itself to startup only when the user turns on
+    automatic cleaning in Settings (a Task Scheduler task, lib\Core\AutoClean.ps1).
 
     How it works:
       1. The user picks drives. The scanner measures whitelisted junk categories and looks for leftovers
@@ -25,6 +26,7 @@
       -Drives           drives to scan, e.g. -Drives C,P (alias -Dyski)
       -Language         pl, en or es (default: Windows language; alias -Jezyk)
       -NoUpdateCheck    skips the GitHub new-version check at startup (alias -BezAktualizacji)
+      -AutoClean        automatic cleaning at sign-in (started by the Task Scheduler task, not by hand)
 
     https://github.com/Banzamel/PCCleaner - MIT license
 #>
@@ -36,10 +38,11 @@ param(
     [Alias('BezAktualizacji')][switch]$NoUpdateCheck,
     [Alias('Dyski')][string[]]$Drives,
     [Alias('Jezyk')][ValidateSet('', 'pl', 'en', 'es')][string]$Language = '',
+    [switch]$AutoClean,
     [string]$Sid      # account that started the program (set by elevation)
 )
 
-$Version = '1.7.1'
+$Version = '1.8.0'
 $ErrorActionPreference = 'SilentlyContinue'
 $AppDir = $PSScriptRoot
 
@@ -52,6 +55,9 @@ if (-not $Model -and $Config.Model) { $Model = "$($Config.Model)" }
 if ($Config.Assistant -eq $false) { $NoAI = [switch]$true }
 if ($Config.CheckUpdates -eq $false) { $NoUpdateCheck = [switch]$true }
 if ($Config.Preview -eq $true) { $Preview = [switch]$true }
+# Automatic cleaning at sign-in: nothing to do until the next one is due (Settings: every sign-in, daily, weekly)
+if ($AutoClean -and ($Console -or -not (Test-AutoCleanDue $Config))) { exit }
+if ($AutoClean) { $NoUpdateCheck = [switch]$true }
 
 # UI language: as in Windows when it is Polish or Spanish, English otherwise
 if (-not $Language) { $Language = switch ((Get-UICulture).TwoLetterISOLanguageName) { 'pl' { 'pl' } 'es' { 'es' } default { 'en' } } }
@@ -72,6 +78,7 @@ if (-not $isAdmin) {
     if ($Preview) { $argList += '-Preview' }
     if ($NoAI) { $argList += '-NoAI' }
     if ($NoUpdateCheck) { $argList += '-NoUpdateCheck' }
+    if ($AutoClean) { $argList += '-AutoClean' }
     if ($Drives) { $argList += '-Drives', ($Drives -join ',') }
     # If UAC asks for ANOTHER admin account, the script must know whose profile to clean
     $argList += '-Sid', [Security.Principal.WindowsIdentity]::GetCurrent().User.Value
@@ -85,13 +92,15 @@ $CoreFiles = @(
     'Core\Output.ps1', 'Core\User.ps1', 'Core\Common.ps1', 'Core\Files.ps1', 'Core\Categories.ps1', 'Core\Drives.ps1',
     'Core\Scanner.ps1', 'Core\Leftovers.ps1', 'Core\Games.ps1', 'Core\StartupDead.ps1', 'Core\LeftoverScan.ps1',
     'Core\Startup.ps1', 'Core\StartupAi.ps1', 'Core\Plan.ps1', 'Core\Ollama.ps1', 'Core\Assistant.ps1',
-    'Core\DiskAnalysis.ps1', 'Core\Updates.ps1', 'Core\Drivers.ps1', 'Core\History.ps1', 'Core\Cleanup.ps1'
+    'Core\DiskAnalysis.ps1', 'Core\Updates.ps1', 'Core\Drivers.ps1', 'Core\History.ps1', 'Core\Cleanup.ps1',
+    'Core\AutoClean.ps1'
 )
 $GuiFiles = @(
     'Gui\Base.ps1', 'Gui\Theme.ps1', 'Gui\Output.ps1', 'Gui\Drawing.ps1', 'Gui\Controls.ps1', 'Gui\List.ps1',
     'Gui\State.ps1', 'Gui\Pages\Overview.ps1', 'Gui\Pages\PlanRows.ps1', 'Gui\Pages\Plan.ps1', 'Gui\Pages\Analysis.ps1',
     'Gui\Pages\Startup.ps1', 'Gui\Pages\Drivers.ps1', 'Gui\Pages\Cleanup.ps1', 'Gui\Pages\Chat.ps1',
-    'Gui\Pages\Log.ps1', 'Gui\Pages\Settings.ps1', 'Gui\Navigation.ps1', 'Gui\Placement.ps1', 'Gui\Window.ps1'
+    'Gui\Pages\Log.ps1', 'Gui\Pages\Settings.ps1', 'Gui\Navigation.ps1', 'Gui\Placement.ps1', 'Gui\Tray.ps1',
+    'Gui\Window.ps1'
 )
 $ConsoleFiles = @(
     'Console\Common.ps1', 'Console\Drives.ps1', 'Console\Plan.ps1', 'Console\Chat.ps1', 'Console\Analysis.ps1',
