@@ -79,22 +79,25 @@ GitHub and the model from the Ollama library), which runs only when you click **
 ### Installer (recommended)
 
 1. Download `PCCleaner-Setup-<version>.exe` from [Releases](https://github.com/Banzamel/PCCleaner/releases).
-2. Run it. It installs for your account (no admin rights needed for the installation) and lets you choose the
-   language. It adds *PC Cleaner* and *PC Cleaner (preview)* to the Start menu.
+2. Run it. It installs for your account into `C:\Banzamel\PCCleaner` on the system drive (no admin rights needed for
+   the installation; an update of the PowerShell version stays in its old folder) and lets you choose the language.
+   It adds *PC Cleaner* and *PC Cleaner (preview)* to the Start menu.
 3. Start **PC Cleaner**. Windows asks for administrator rights (UAC) - the program needs them to clean system caches.
 4. Optional: *Settings → Install the AI assistant* downloads the Ollama engine (about 1.4 GB) and the model
    (`qwen3:4b-instruct` 2.5 GB or `qwen3:8b` 5.2 GB) **into the program folder** (`ai\`).
 
-Everything stays inside the install folder: no separate Ollama installation, no background service, no
-environment variables. A tray icon and an autostart task appear only when you turn them on in *Settings* (the X button
+Everything stays inside the install folder: the program, its settings, logs, backups, the window's WebView2 data and
+the AI engine. **PC Cleaner writes nothing to `%APPDATA%`, `%LOCALAPPDATA%` or your profile** (only `%TEMP%` during
+setup and updates, and the shortcuts). No separate Ollama installation, no background service, no environment variables. A tray icon and an autostart task appear only when you turn them on in *Settings* (the X button
 hiding to the tray, automatic cleaning). The AI engine runs on a private port (`11435`) only while PC Cleaner is open,
-so it does not conflict with an Ollama you may have installed yourself. **Uninstalling removes the program, the AI
-engine, the models, the automatic cleaning task and `%LOCALAPPDATA%\PCCleaner` (logs, settings and the `.reg`/`.xml`
-backups).** Updating keeps all of them.
+so it does not conflict with an Ollama you may have installed yourself. **Uninstalling removes the program and the automatic
+cleaning task; tick *Delete the application data* to also remove `data\` (settings, logs, the `.reg`/`.xml` backups)
+and the AI engine with its models.** Updating keeps all of them.
 
-**Updating from the PowerShell version (1.8.0 and older):** the new installer takes over: it keeps the settings,
-logs, history and backups, moves the AI engine and models into the new program folder and removes the old version
-silently. The update button of the old version installs it the same way.
+**Updating from the PowerShell version (1.8.0 and older):** the new installer installs into the old program folder,
+moves the settings, logs, history and backups from `%LOCALAPPDATA%\PCCleaner` into `data\` (deleting the old folder
+after checking the copy), keeps the AI engine and models and removes the old version silently. If the old version
+cannot be removed, the installer stops and changes nothing. The update button of the old version installs it the same way.
 
 The installer is not code-signed, so Windows SmartScreen may show a warning on the first run
 (*More info → Run anyway*).
@@ -103,7 +106,7 @@ The installer is not code-signed, so Windows SmartScreen may show a warning on t
 
 Download `PCCleaner-<version>-portable.zip`, extract it anywhere and run `PCCleaner.exe` (Microsoft Edge WebView2,
 built into Windows 10 and 11, is required). The AI assistant can be installed from *Settings* the same way; it goes
-into an `ai` subfolder next to the program. The portable version does not update itself: the update button opens the
+into an `ai` subfolder next to the program, and the settings and logs into `data`. The portable version does not update itself: the update button opens the
 Releases page.
 
 ### Requirements
@@ -152,11 +155,11 @@ The pages are in the navigation bar on the left.
    (never, at every sign-in, once a day or once a week; applied as soon as you save), *always start in preview mode*,
    the logs (open the folder, clear them, delete ones older than 30 days at start), **What to scan** (each category,
    leftovers and large files on or off) and **Excluded folders**, which are never measured, listed or deleted.
-   **Save and restart** applies them at once. They are kept in `%LOCALAPPDATA%\PCCleaner\settings.json`;
+   **Save and restart** applies them at once. They are kept in `data\settings.json` in the program folder;
    command-line parameters win over them.
 
 **Ctrl+1** to **Ctrl+8** switch pages. The window follows the Windows light or dark app mode (unless *Settings*
-says otherwise) and remembers its size, position and last page in `%LOCALAPPDATA%\PCCleaner\window.json`.
+says otherwise) and remembers its size, position and last page in `data\window.json`.
 
 ### Parameters
 
@@ -196,15 +199,16 @@ was modified in the last 30 days or is on the built-in list of system and driver
 
 | Path | Contents |
 |---|---|
-| install folder (`%LOCALAPPDATA%\PC Cleaner` by default) | `PCCleaner.exe`, `uninstall.exe`, `config.json` (the model chosen when the AI was installed) |
+| install folder (`C:\Banzamel\PCCleaner` by default) | `PCCleaner.exe`, `uninstall.exe`, `config.json` (the model chosen when the AI was installed) |
 | `<install folder>\ai\ollama\` | the Ollama engine |
 | `<install folder>\ai\models\` | AI models |
-| `%LOCALAPPDATA%\PCCleaner\logs\` | one log per run: scan report, chosen plan, results, everything moved to the Recycle Bin, files that could not be deleted |
-| `%LOCALAPPDATA%\PCCleaner\window.json` | window size, position, last page and theme |
-| `%LOCALAPPDATA%\PCCleaner\settings.json` | the *Settings* page, including the date of the last automatic cleaning |
-| `%LOCALAPPDATA%\PCCleaner\history.json` | the last 20 cleanups |
+| `<install folder>\data\webview\` | the window's WebView2 data (cache) |
+| `<install folder>\data\logs\` | one log per run: scan report, chosen plan, results, everything moved to the Recycle Bin, files that could not be deleted |
+| `<install folder>\data\window.json` | window size, position, last page and theme |
+| `<install folder>\data\settings.json` | the *Settings* page, including the date of the last automatic cleaning |
+| `<install folder>\data\history.json` | the last 20 cleanups |
 | Task Scheduler: `PC Cleaner - automatic cleaning` | only when automatic cleaning is on in *Settings* |
-| `%LOCALAPPDATA%\PCCleaner\logs\kopie_rejestru\` | `.reg` backups of deleted registry keys and values, `.xml` backups of deleted Task Scheduler tasks |
+| `<install folder>\data\logs\kopie_rejestru\` | `.reg` backups of deleted registry keys and values, `.xml` backups of deleted Task Scheduler tasks |
 
 ## About the AI part
 

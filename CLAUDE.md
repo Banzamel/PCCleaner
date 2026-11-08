@@ -50,6 +50,14 @@ User-facing texts are written in English in the code; `src/lang/pl.json` and `es
 the translation (a missing one shows English). Rust returns `Text { key, args }` and the window translates it.
 `test/lang/dictionaries.test.ts` fails when a text used in the code is missing from a dictionary.
 
+## Where the program writes
+
+Only into its own folder: `data\` (settings, window.json, history, logs, `.reg`/`.xml` backups, the WebView2 profile
+via `data_directory`) and `ai\` (Ollama with HOME/APPDATA/LOCALAPPDATA pointed inside it). Never into `%APPDATA%`,
+`%LOCALAPPDATA%` or the user profile - check every new plugin for `app_*_dir` use. Allowed outside: `%TEMP%` during
+setup/update and the Start menu/desktop shortcuts. Default install folder `<system drive>\Banzamel\PCCleaner`
+(`src-tauri/nsis/pcc-migrate.nsh`).
+
 ## Safety rules (do not weaken)
 
 - Deleting never follows junctions or symbolic links (`core/src/fs/`), excluded folders are never touched,

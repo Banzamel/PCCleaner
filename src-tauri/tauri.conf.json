@@ -14,6 +14,7 @@
     "windows": [
       {
         "label": "main",
+        "create": false,
         "title": "PC Cleaner",
         "width": 1240,
         "height": 800,

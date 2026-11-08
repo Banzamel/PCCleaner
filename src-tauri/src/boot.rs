@@ -28,13 +28,14 @@ pub fn prepare() -> Option<AppState> {
     }
     locale::set_app_user_model_id(APP_ID);
     let user = UserContext::detect(args.sid.as_deref());
-    let data = DataPaths::new(&user.local_appdata);
+    let exe = std::env::current_exe().unwrap_or_default();
+    let app_dir = exe.parent().map(PathBuf::from).unwrap_or_default();
+    // Everything the program writes stays in its own folder, never in the user profile
+    let data = DataPaths::new(&app_dir);
     let config = Config::load(&data);
     if args.auto_clean && !autoclean::is_due(&config.auto_clean, &config.auto_clean_last, chrono::Local::now().date_naive()) {
         return None;
     }
-    let exe = std::env::current_exe().unwrap_or_default();
-    let app_dir = exe.parent().map(PathBuf::from).unwrap_or_default();
     let log = Arc::new(Logger::new(&data.logs()));
     if config.log_days > 0 {
         let n = logger::remove_old(&data.logs(), &log.path, config.log_days);

@@ -1,14 +1,20 @@
 use std::path::{Path, PathBuf};
 
-/// Where PC Cleaner keeps its data for one account.
+/// Where PC Cleaner keeps its data: `<program folder>\data`. Nothing of the program itself goes to
+/// %APPDATA%, %LOCALAPPDATA% or the user profile (the installer moves the data of older versions here).
 #[derive(Debug, Clone)]
 pub struct DataPaths {
     pub root: PathBuf,
 }
 
 impl DataPaths {
-    pub fn new(local_appdata: &Path) -> Self {
-        Self { root: local_appdata.join("PCCleaner") }
+    pub fn new(app_dir: &Path) -> Self {
+        Self { root: app_dir.join("data") }
+    }
+
+    /// The WebView2 profile (cache, local storage) of the window.
+    pub fn webview(&self) -> PathBuf {
+        self.root.join("webview")
     }
 
     pub fn settings(&self) -> PathBuf {

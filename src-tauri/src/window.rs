@@ -5,6 +5,14 @@ use tauri::{AppHandle, Emitter, Manager, PhysicalPosition, PhysicalSize, Webview
 use crate::state::AppState;
 use crate::tray;
 
+/// Creates the main window from tauri.conf.json with its WebView2 profile in `<program>\data\webview`
+/// (by default WebView2 would keep it in %LOCALAPPDATA%\<identifier>).
+pub fn create(app: &AppHandle) -> tauri::Result<WebviewWindow> {
+    let st = app.state::<AppState>();
+    let config = app.config().app.windows.iter().find(|w| w.label == "main").cloned().unwrap_or_default();
+    tauri::WebviewWindowBuilder::from_config(app, &config)?.data_directory(st.data.webview()).build()
+}
+
 /// Restores size and position from window.json when the window lands on a connected monitor;
 /// the size follows a changed display scale. Otherwise the window stays centred.
 pub fn restore(win: &WebviewWindow, st: &AppState) {

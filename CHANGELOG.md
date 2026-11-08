@@ -16,8 +16,12 @@
 - **Deletion reports every file it could not delete** (in use, no permission) in the log, not just a count.
 - Command-line parameters are `--preview`, `--no-ai`, `--model`, `--drives`, `--language`, `--no-update-check` and
   `--auto-clean`; the old forms (`-Preview`, `-Podglad`, `-BezLLM`, `-Dyski`...) still work.
-- The installer installs for the current account (`%LOCALAPPDATA%\PC Cleaner`) and asks for the language; the Start
-  menu has *PC Cleaner* and *PC Cleaner (preview)*.
+- **Everything in one folder, nothing in the user profile:** the program installs into `C:\Banzamel\PCCleaner` (an
+  update of 1.8.0 stays in its old folder) and keeps its settings, logs, history, backups and the window's WebView2
+  data in `data\` there; it writes nothing to `%APPDATA%` or `%LOCALAPPDATA%`. The installer moves
+  `%LOCALAPPDATA%\PCCleaner` into `data\` and deletes it after checking the copy. Uninstalling removes `data\` and the
+  AI engine only when you tick *Delete the application data*. The installer asks for the language; the Start menu has
+  *PC Cleaner* and *PC Cleaner (preview)*.
 - **Removed:** the text mode (`-Console`, *PC Cleaner (console)*) and `Install-AI.ps1`.
 
 ## 1.8.0 (2026-10-30)

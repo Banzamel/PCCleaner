@@ -24,14 +24,13 @@ pub fn run() {
         .manage(state)
         .setup(move |a| {
             tray::create(a.handle())?;
-            if let Some(w) = a.get_webview_window("main") {
-                window::restore(&w, &a.state());
-                // Automatic cleaning at sign-in runs in the tray without showing the window
-                if auto_clean {
-                    tray::hide_to_tray(a.handle(), true);
-                } else {
-                    w.show()?;
-                }
+            let w = window::create(a.handle())?;
+            window::restore(&w, &a.state());
+            // Automatic cleaning at sign-in runs in the tray without showing the window
+            if auto_clean {
+                tray::hide_to_tray(a.handle(), true);
+            } else {
+                w.show()?;
             }
             Ok(())
         })
