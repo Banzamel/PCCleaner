@@ -6,13 +6,15 @@
 
 **Smart Windows cleanup with a local AI assistant.** PC Cleaner finds junk files, caches and leftovers of uninstalled
 programs and games, shows you a plan with exact sizes, and cleans only after you confirm. An optional local AI model
-explains what the leftovers were and answers your questions. The AI engine ([Ollama](https://ollama.com)) is bundled
-in the program folder, so everything runs on your machine. The only network requests are an optional update check
-against GitHub Releases (disable it with `-NoUpdateCheck`) and the driver check on Windows Update, which runs only
-when you click **Check** on the *Drivers* page.
+explains what the leftovers were and answers your questions. The AI engine ([Ollama](https://ollama.com)) is installed
+into the program folder on request, so everything runs on your machine. The only network requests are an update check
+against GitHub Releases at start (turn it off in *Settings* or with `--no-update-check`), the driver check on Windows
+Update, which runs only when you click **Check** on the *Drivers* page, and the AI download (the Ollama engine from
+GitHub and the model from the Ollama library), which runs only when you click **Install** in *Settings*.
 
-> PC Cleaner has a **window** (default) and a **text mode** (`-Console`). The interface is in **English, Polish or Spanish**,
-> chosen in the installer, in *Settings* or from the Windows display language (`-Language en` / `pl` / `es` to override).
+> The interface is in **English, Polish or Spanish**, chosen in the installer, in *Settings* or from the Windows display
+> language (`--language en` / `pl` / `es` to override).
+
 ---
 
 ## Features
@@ -26,11 +28,10 @@ when you click **Check** on the *Drivers* page.
   Steam, Epic Games Launcher, Battle.net; each app is skipped while it is running), JetBrains IDE caches and indexes
   (opt-in), and optionally DISM, older driver versions in the DriverStore, the previous Windows version
   (`Windows.old`, removed through Windows Disk Cleanup) and the Docker build cache.
-- **What takes up space (`a`).** A fast scan of any drive (about 45 s for 500,000 files) lists the most specific large
-  folders and the largest files, with built-in hints (WinSxS, hiberfil, WSL disks, Steam games, `node_modules`…). The
-  AI can describe each item and suggest what to do. Its advice comes from a fixed list of safe options, and for
-  `Windows`, `ProgramData` and `Program Files` the advice is set by the program, not by the model. This view is
-  read-only: nothing from it is deleted.
+- **What takes up space.** A fast scan of any drive lists the most specific large folders and the largest files, with
+  built-in hints (WinSxS, hiberfil, WSL disks, Steam games, `node_modules`…). The AI can describe each item and suggest
+  what to do. Its advice comes from a fixed list of safe options, and for `Windows`, `ProgramData` and `Program Files`
+  the advice is set by the program, not by the model. This view is read-only: nothing from it is deleted.
 - **Startup apps.** A list of programs that start when you sign in (Run registry keys, Startup folders, Task
   Scheduler tasks with a sign-in or boot trigger) with publisher and command. Turning one off uses the same switch as
   Task Manager, so nothing is removed and it can be turned back on. Security software, drivers, hardware panels,
@@ -39,7 +40,7 @@ when you click **Check** on the *Drivers* page.
 - **Automatic cleaning (optional, off by default).** In *Settings* you can let PC Cleaner clean at every sign-in, once
   a day or once a week. A Task Scheduler task of your account starts it with administrator rights about two minutes
   after you sign in; it runs in the notification area, cleans only the categories the plan recommends (never leftovers
-  or large files) and shows the freed space in a notification. Click it to open the window; otherwise the program
+  or large files) and shows the freed space in a notification. Open it from the tray icon; otherwise the program
   closes itself. Preview mode only reports what would be cleaned. Turning the option off removes the task.
 - **Driver updates.** The *Drivers* page looks for newer drivers for this PC's devices on Windows Update (the same
   signed drivers as the optional updates in Settings), shows the current and new version of each, and installs the
@@ -57,7 +58,8 @@ when you click **Check** on the *Drivers* page.
   - every registry key or value is **exported to a `.reg` backup** before deletion (double-click the file to
     restore), every Task Scheduler task to an `.xml` backup, and a **System Restore point** is created first,
   - junctions and symlinks are removed as links and never followed,
-  - files in use are skipped,
+  - files in use are skipped and every file that could not be deleted is written to the log,
+  - the window can only pick items the scan found; it never sends a path to delete,
   - save games, large files and leftover folders that still contain `.exe` files (possibly portable programs)
     are never preselected.
 - **Works on other people's PCs too:**
@@ -65,55 +67,56 @@ when you click **Check** on the *Drivers* page.
   - moved user folders (Documents in OneDrive, Downloads on another drive) are found through the Windows settings,
   - on a standard account, where UAC asks for a **different administrator's** password, PC Cleaner still cleans the
     profile, registry and Recycle Bin of the person who started it, not the administrator's,
-  - the AI installer picks the ARM64 engine on ARM PCs and adds AMD (ROCm) libraries when an AMD GPU is present.
+  - the AI setup picks the ARM64 engine on ARM PCs and adds AMD (ROCm) libraries when an AMD GPU is present.
 - **AI on demand.** The model never decides what gets deleted and never runs commands. It loads only when you
   ask for it: to describe what each leftover was, to describe the largest folders on a drive and suggest what to do,
   or to chat about the plan, folders and programs. AI calls run in the background, so the window stays responsive.
-- **Updates.** PC Cleaner checks GitHub Releases at start. When a new version is out, one click downloads and runs
-  its installer.
+- **Updates.** PC Cleaner checks GitHub Releases at start. When a new version is out, one click downloads the signed
+  installer, installs it and starts the new version.
 
 ## Installation
 
 ### Installer (recommended)
 
 1. Download `PCCleaner-Setup-<version>.exe` from [Releases](https://github.com/Banzamel/PCCleaner/releases).
-2. Run it. The wizard lets you choose:
-   - the **install location** (per-user by default, no admin rights needed; choose *all users* if you prefer),
-   - a **desktop shortcut**,
-   - the optional **AI assistant** and its **model** (`qwen3:4b-instruct` or `qwen3:8b`). The installer downloads
-     the Ollama engine (about 1.4 GB) and the model (2.5–5 GB) **into the program folder** (`ai\`).
-3. Start **PC Cleaner** from the Start menu or the desktop.
+2. Run it. It installs for your account (no admin rights needed for the installation) and lets you choose the
+   language. It adds *PC Cleaner* and *PC Cleaner (preview)* to the Start menu.
+3. Start **PC Cleaner**. Windows asks for administrator rights (UAC) - the program needs them to clean system caches.
+4. Optional: *Settings → Install the AI assistant* downloads the Ollama engine (about 1.4 GB) and the model
+   (`qwen3:4b-instruct` 2.5 GB or `qwen3:8b` 5.2 GB) **into the program folder** (`ai\`).
 
 Everything stays inside the install folder: no separate Ollama installation, no background service, no
 environment variables. A tray icon and an autostart task appear only when you turn them on in *Settings* (the X button
-hiding to the tray, automatic cleaning); the uninstaller removes the task. The AI engine runs on a private port (`11435`) only while PC Cleaner is open, so it does not
-conflict with an Ollama you may have installed yourself. **Uninstalling removes the program, the AI engine, the
-models and `%LOCALAPPDATA%\PCCleaner` (logs, window settings and the `.reg`/`.xml` backups).**
+hiding to the tray, automatic cleaning). The AI engine runs on a private port (`11435`) only while PC Cleaner is open,
+so it does not conflict with an Ollama you may have installed yourself. **Uninstalling removes the program, the AI
+engine, the models, the automatic cleaning task and `%LOCALAPPDATA%\PCCleaner` (logs, settings and the `.reg`/`.xml`
+backups).** Updating keeps all of them.
+
+**Updating from the PowerShell version (1.8.0 and older):** the new installer takes over: it keeps the settings,
+logs, history and backups, moves the AI engine and models into the new program folder and removes the old version
+silently. The update button of the old version installs it the same way.
 
 The installer is not code-signed, so Windows SmartScreen may show a warning on the first run
 (*More info → Run anyway*).
 
 ### Portable
 
-Download `PC Cleaner-<version>-portable.zip`, extract it anywhere and run `PCCleaner.bat`.
-To enable the AI assistant, run `Install-AI.ps1` from the same folder. It downloads Ollama and the model into an
-`ai` subfolder:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File Install-AI.ps1 -Model qwen3:4b-instruct
-```
+Download `PCCleaner-<version>-portable.zip`, extract it anywhere and run `PCCleaner.exe` (Microsoft Edge WebView2,
+built into Windows 10 and 11, is required). The AI assistant can be installed from *Settings* the same way; it goes
+into an `ai` subfolder next to the program. The portable version does not update itself: the update button opens the
+Releases page.
 
 ### Requirements
 
-- Windows 10 or 11 with Windows PowerShell 5.1 (built in).
-- Administrator rights when cleaning. PC Cleaner asks for them through UAC.
+- Windows 10 or 11 (64-bit) with Microsoft Edge WebView2 (built in; the installer adds it when missing).
+- Administrator rights. PC Cleaner asks for them through UAC at start.
 - Optional, for the AI assistant: about 4–7 GB of disk space in the install folder. An NVIDIA GPU with 6 GB of
   VRAM or more is recommended, though it also runs (slower) on the CPU.
 
 ## Usage
 
 Start **PC Cleaner** from the Start menu or the desktop. The Start menu also has *PC Cleaner (preview)*, which never
-deletes anything, and *PC Cleaner (console)* for the text mode.
+deletes anything.
 
 ### The window
 
@@ -132,24 +135,25 @@ The pages are in the navigation bar on the left.
    - **Clean selected...** shows a summary and asks for confirmation. A progress screen then shows every step, and
      the result: space freed, free space before and after as bars, backups, the restore point and the last five cleanups.
 3. **What takes up space**: pick a drive, click **Analyse**, then **AI: describe and advise**. Double-click an
-   item to open it in File Explorer.
+   item to show it in File Explorer.
 4. **Startup apps**: the switch on each row turns a program on or off at once, like in Task Manager. Protected items
    are read-only. The bin next to the switch removes an entry permanently, with a `.reg` / `.xml` backup (shortcuts go
    to the Recycle Bin). **AI: what is it?** describes the programs. The change takes effect at the next sign-in.
-   Double-click an item to open its folder.
+   Double-click an item to show its file.
 5. **Drivers**: **Check** looks for newer drivers on Windows Update (usually 1-3 minutes). Each row shows the
-   device, the current and new version, and the download size; click a row to tick or untick it.
+   device, the current and new version, and the download size; the box ticks or unticks it.
    **Install selected...** creates a System Restore point and installs the ticked drivers one by one. Devices with a
    problem in Device Manager are listed below; double-click opens Device Manager.
 6. **AI assistant**: ask about the plan, folders, programs or games (general questions work before a scan too).
 7. **Log**: everything the program does, also written to the log file.
 8. **Settings**: language (Polish, English, Spanish), theme (light, dark or as in Windows), the AI assistant on or
-   off, the AI model, the update check at start, **the X button** (closes the program or hides the window to the
-   notification area; *Exit* in the tray icon menu closes it), **automatic cleaning** (never, at every sign-in, once a
-   day or once a week; applied as soon as you save), *always start in preview mode*, the logs (open the folder, clear
-   them, delete ones older than 30 days at start), **What to scan** (each category, leftovers and large files on or
-   off) and **Excluded folders**, which are never measured, listed or deleted. **Save and restart** applies them at once. They are
-   kept in `%LOCALAPPDATA%\PCCleaner\settings.json`; command-line parameters win over them.
+   off, the AI model and **Install the AI assistant**, the update check at start, **the X button** (closes the program
+   or hides the window to the notification area; *Exit* in the tray icon menu closes it), **automatic cleaning**
+   (never, at every sign-in, once a day or once a week; applied as soon as you save), *always start in preview mode*,
+   the logs (open the folder, clear them, delete ones older than 30 days at start), **What to scan** (each category,
+   leftovers and large files on or off) and **Excluded folders**, which are never measured, listed or deleted.
+   **Save and restart** applies them at once. They are kept in `%LOCALAPPDATA%\PCCleaner\settings.json`;
+   command-line parameters win over them.
 
 **Ctrl+1** to **Ctrl+8** switch pages. The window follows the Windows light or dark app mode (unless *Settings*
 says otherwise) and remembers its size, position and last page in `%LOCALAPPDATA%\PCCleaner\window.json`.
@@ -157,15 +161,14 @@ says otherwise) and remembers its size, position and last page in `%LOCALAPPDATA
 ### Parameters
 
 ```
-PCCleaner.bat                     the window
-PCCleaner.bat -Console            text mode (alias -Konsola)
-PCCleaner.bat -Preview            preview: scan and plan only, nothing is deleted (alias -Podglad)
-PCCleaner.bat -NoAI               without the AI assistant (alias -BezLLM)
-PCCleaner.bat -Model qwen3:8b     another model
-PCCleaner.bat -Drives C,P         pre-select these drives (alias -Dyski)
-PCCleaner.bat -Language en        interface language: en, pl or es (alias -Jezyk)
-PCCleaner.bat -NoUpdateCheck      no update check at start (alias -BezAktualizacji)
-PCCleaner.bat -AutoClean          automatic cleaning, as started by the Settings task at sign-in
+PCCleaner.exe                      the window
+PCCleaner.exe --preview            preview: scan and plan only, nothing is deleted (also -Preview, -Podglad)
+PCCleaner.exe --no-ai              without the AI assistant (also -NoAI, -BezLLM)
+PCCleaner.exe --model qwen3:8b     another model
+PCCleaner.exe --drives C,P         pre-select these drives (also -Drives, -Dyski)
+PCCleaner.exe --language en        interface language: en, pl or es (also -Language, -Jezyk)
+PCCleaner.exe --no-update-check    no update check at start (also -NoUpdateCheck, -BezAktualizacji)
+PCCleaner.exe --auto-clean         automatic cleaning, as started by the Settings task at sign-in
 ```
 
 ### Drives
@@ -174,22 +177,6 @@ PC Cleaner lists local fixed drives with a letter. USB drives, memory cards, net
 a letter (EFI, Recovery) are skipped, as are BitLocker-locked volumes. All drives are ticked by default; the system
 drive is always scanned (Windows caches, user profile, Program Files). The other ticked drives are used for the
 Recycle Bin, Steam and Epic libraries, and the *what takes up space* view.
-
-### Text mode keys
-
-The first screen asks which drives to scan: `Enter` continues, numbers toggle drives. On the plan screen:
-
-| Key | Action |
-|---|---|
-| `Enter` | go to the summary and the *start cleaning? [y/N]* question |
-| `3` or `3 7 9` | toggle categories or leftovers by number |
-| `w` | AI describes what each leftover was |
-| `p` | chat with the assistant; an empty line returns to the plan |
-| `a` | what takes up space on a drive; then `w` lets the AI describe the items |
-| `s` | startup apps; numbers turn programs on or off (after a *[y/N]* question), `w` lets the AI describe them |
-| `d` | drivers: looks for newer drivers on Windows Update; numbers or `*` install them (after a *[y/N]* question) |
-| `u` | install the new version (shown only when an update is available) |
-| `q` | quit without deleting anything |
 
 ### What gets preselected
 
@@ -203,22 +190,21 @@ The first screen asks which drives to scan: `Enter` continues, numbers toggle dr
 A folder is **not** treated as a leftover when its name or path matches an installed program, a Microsoft Store app,
 a service, a running process, a Start menu or desktop shortcut, or an installed Steam game. It is also skipped when it
 was modified in the last 30 days or is on the built-in list of system and driver folders
-(`$SkippedNames` in `lib\Core\Leftovers.ps1`).
+(`SKIPPED_NAMES` in `src-tauri/core/src/scan/leftovers/names.rs`).
 
 ## Files and logs
 
 | Path | Contents |
 |---|---|
-| install folder | `PCCleaner.ps1` (start), `lib\Core\` (scanning, plan, AI, cleaning), `lib\Gui\` (window), `lib\Console\` (text mode), `PCCleaner.bat`, `Install-AI.ps1`, `config.json` (the model chosen in the installer) |
-| `<install folder>\ai\ollama\` | the bundled Ollama engine |
+| install folder (`%LOCALAPPDATA%\PC Cleaner` by default) | `PCCleaner.exe`, `uninstall.exe`, `config.json` (the model chosen when the AI was installed) |
+| `<install folder>\ai\ollama\` | the Ollama engine |
 | `<install folder>\ai\models\` | AI models |
-| `%LOCALAPPDATA%\PCCleaner\logs\` | one log per run: scan report, chosen plan, results, everything moved to the Recycle Bin |
+| `%LOCALAPPDATA%\PCCleaner\logs\` | one log per run: scan report, chosen plan, results, everything moved to the Recycle Bin, files that could not be deleted |
 | `%LOCALAPPDATA%\PCCleaner\window.json` | window size, position, last page and theme |
 | `%LOCALAPPDATA%\PCCleaner\settings.json` | the *Settings* page, including the date of the last automatic cleaning |
+| `%LOCALAPPDATA%\PCCleaner\history.json` | the last 20 cleanups |
 | Task Scheduler: `PC Cleaner - automatic cleaning` | only when automatic cleaning is on in *Settings* |
 | `%LOCALAPPDATA%\PCCleaner\logs\kopie_rejestru\` | `.reg` backups of deleted registry keys and values, `.xml` backups of deleted Task Scheduler tasks |
-
-Logs and registry backups are kept after you uninstall the program.
 
 ## About the AI part
 
@@ -234,67 +220,67 @@ about game studios, the model also invented titles. That is why:
 
 | Model | Notes (tested on a GTX 1060 6 GB) |
 |---|---|
-| `qwen3:4b-instruct` | **recommended**, runs fully on the GPU, `w` takes about 30–60 s |
+| `qwen3:4b-instruct` | **recommended**, runs fully on the GPU, describing the leftovers takes about 30–60 s |
 | `qwen3:8b` | does not fit into 6 GB VRAM, about 3× slower; worth it with 8 GB or more |
 
 ## Troubleshooting
 
 | Problem | Fix |
 |---|---|
-| *The AI assistant is not installed* (*Asystent AI nie jest zainstalowany*) | rerun the installer and tick the AI assistant, or run `Install-AI.ps1` from the install folder |
-| *Could not start Ollama* (*Nie udało się uruchomić Ollamy*) | run `ai\ollama\ollama.exe serve` from the install folder and check the output |
-| *Model … is missing* (*Brak modelu …*) | `Install-AI.ps1 -Model qwen3:4b-instruct` |
+| *The AI assistant is not installed* | *Settings → Install the AI assistant* |
+| *Could not start Ollama* | run `ai\ollama\ollama.exe serve` from the install folder and check the output |
+| *Model … is missing* | *Settings → Install the AI assistant* with that model |
 | AI answers take minutes | the model probably does not fit into the VRAM (check *Dedicated GPU memory* in Task Manager); close games or other GPU-heavy programs |
 | Browser cache skipped | close the browser (also from the system tray) and run again |
-| Garbled Polish characters | the `.ps1` files must be saved as **UTF-8 with BOM** |
 | Taskbar did not come back | `Ctrl+Shift+Esc` → File → Run new task → `explorer.exe` |
 | A registry key was needed after all | double-click its `.reg` file in `logs\kopie_rejestru\`, or use the *PC Cleaner* System Restore point |
 | A deleted scheduled task was needed after all | Task Scheduler → *Import Task...* → its `.xml` file in `logs\kopie_rejestru\` |
-| A program no longer starts with Windows | *Startup apps* page → select it → *Turn on selected* (or Task Manager → *Startup apps*) |
-| Restore point *skipped by Windows* (*pominięty przez Windows*) | Windows creates at most one restore point per 24 hours by default; the `.reg` backups are still made |
-| App cache *skipped - running: …* (*pominięto - działa: …*) | close the app (also from the system tray) and run again |
+| A program no longer starts with Windows | *Startup apps* page → turn its switch on (or Task Manager → *Startup apps*) |
+| Restore point *skipped by Windows* | Windows creates at most one restore point per 24 hours by default; the `.reg` backups are still made |
+| App cache *skipped: … is running* | close the app (also from the system tray) and run again |
 
-## Code layout
+## Code structure
+
+PC Cleaner is a [Tauri 2](https://tauri.app) program: the system work is done in Rust, the window is React 19 with
+TypeScript (Vite).
 
 | Folder | Contents |
 |---|---|
-| `PCCleaner.ps1` | start: parameters, administrator rights, the list of files to load |
-| `lib\Core\` | the core without any interface: user, categories, scanners, leftovers, startup apps, plan, Ollama and the AI assistant, disk analysis, updates, drivers, cleaning |
-| `lib\Gui\` | the window: theme, drawing, controls, lists, state, navigation; one file per page in `lib\Gui\Pages\` |
-| `lib\Console\` | text mode (`-Console`), one file per screen |
-| `lib\*\cs\` | C# helpers compiled with `Add-Type` (file locks, the Ollama job object, the fast disk scanner, Windows APIs for the window) |
+| `src-tauri/core/` | crate `pccleaner-core`, no UI: scanning, cleanup categories (one trait, one file per category), leftovers, cleaning, startup apps, drivers, disk analysis, the Ollama client, storage |
+| `src-tauri/src/` | the Tauri app: typed commands, events, tray, window state, elevation |
+| `src/app/` | the window shell: navigation, boot, the store and the services |
+| `src/features/<feature>/` | one folder per page: `components/`, `hooks/`, services, `index.ts` |
+| `src/core/` | pure TypeScript logic: plan rules, summary, AI prompts and report |
+| `src/platform/` | the only code that talks to Tauri |
+| `src/lang/` | `pl.json`, `es.json`: the English text mapped to the translation |
 
-The files are dot-sourced by `PCCleaner.ps1` in a fixed order (`$CoreFiles`, `$GuiFiles`, `$ConsoleFiles`) and share
-its variables, so a new file has to be added to that list and to nothing else. Names, folders and comments are in English and no file is longer than
-300 lines; only the user-facing text (the `L 'pl' 'en'` pairs) is also in Polish. Other languages are in `lang\<code>.json`,
-which maps the English text to the translation; a text missing there is shown in English. The code is formatted with
-PSScriptAnalyzer using `PSScriptAnalyzerSettings.psd1`:
-
-```powershell
-Get-ChildItem -Recurse -Filter *.ps1 | ForEach-Object {
-    $code = Invoke-Formatter -ScriptDefinition (Get-Content $_.FullName -Raw) -Settings .\PSScriptAnalyzerSettings.psd1
-    [IO.File]::WriteAllText($_.FullName, $code, [Text.UTF8Encoding]::new($true))
-}
-```
-
-Scripts must stay UTF-8 with BOM, because Windows PowerShell 5.1 reads files without it as ANSI.
+The rules every file follows (size limits, one responsibility per file, feature folders, services as classes, strict
+TypeScript, Rust module layout, tests mirroring the source tree) are in [`CLAUDE.md`](CLAUDE.md) under *Code structure*.
 
 ## Building from source
 
-The installer is built by GitHub Actions on every `v*` tag (see `.github/workflows/release.yml`). To build it locally:
+Requirements: Node.js 22+, Rust (stable, MSVC toolchain) on Windows. Then:
 
 ```powershell
-& "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=1.0.0 installer\PCCleaner.iss
+npm ci
+npm test                                   # TypeScript tests (Vitest)
+cd src-tauri; cargo test -p pccleaner-core; cd ..
+npx tauri build                            # installer in src-tauri\target\release\bundle\nsis\
 ```
 
-To release, bump `$Wersja` in `PCCleaner.ps1`, update `CHANGELOG.md`, then tag:
+Without Rust on the machine, `npm run dist` builds the installer in Docker (`docker/build.sh`, image `tauri-build`
+with cargo-xwin and NSIS) and copies it to `release\`.
+
+The installer is built and published by GitHub Actions on every `v*` tag (`.github/workflows/release.yml`). To
+release, set the version in `package.json`, rename *Unreleased* in `CHANGELOG.md` to that version, then tag:
 
 ```powershell
-git tag -a v1.0.1 -m "PC Cleaner 1.0.1"
+git tag -a v2.0.0 -m "PC Cleaner 2.0.0"
 git push origin main --tags
 ```
 
-The workflow fails if the tag does not match `$Wersja`.
+The workflow fails if the tag does not match `package.json`. It publishes `PCCleaner-Setup-<version>.exe`, its `.sig`,
+`latest.json` (for the updater) and `PCCleaner-<version>-portable.zip`.
 
 ## License
 

@@ -1,5 +1,25 @@
 # Changelog
 
+## [Unreleased]
+
+- **A new program under the hood: Tauri (Rust) + React instead of PowerShell + WinForms.** The pages, the plan rules,
+  the cleanup categories, the safety checks, the AI assistant, the languages and the settings are the same; the
+  window starts faster, scans run in native code and the window never freezes while working.
+- **Updating from 1.8.0 and older:** the new installer keeps your settings, window placement, cleanup history, logs
+  and registry backups, moves the AI engine and models into the new program folder and removes the old version
+  silently. The update button of the old version installs it the same way. The automatic cleaning task is set up
+  again for the new program at its first start.
+- **The AI assistant is installed from Settings** (*Install the AI assistant*, with the model choice) instead of the
+  installer. It still goes into the program folder (`ai\`) and runs on the private port 11435.
+- **Updates are signed:** the program downloads `latest.json` and the installer from GitHub Releases, checks the
+  signature, installs and starts the new version.
+- **Deletion reports every file it could not delete** (in use, no permission) in the log, not just a count.
+- Command-line parameters are `--preview`, `--no-ai`, `--model`, `--drives`, `--language`, `--no-update-check` and
+  `--auto-clean`; the old forms (`-Preview`, `-Podglad`, `-BezLLM`, `-Dyski`...) still work.
+- The installer installs for the current account (`%LOCALAPPDATA%\PC Cleaner`) and asks for the language; the Start
+  menu has *PC Cleaner* and *PC Cleaner (preview)*.
+- **Removed:** the text mode (`-Console`, *PC Cleaner (console)*) and `Install-AI.ps1`.
+
 ## 1.8.0 (2026-10-30)
 
 - **Taskbar icon:** the window has its own taskbar identity, so the taskbar shows the PC Cleaner icon instead of the
