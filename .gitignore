@@ -1,9 +1,12 @@
 # Build output
+node_modules/
 dist/
-portable/
+release/
+src-tauri/target/
+src-tauri/gen/
 
-# Local runtime files
-logs/
-config.json
+# Local runtime files (AI engine and models next to a dev build)
 ai/
+config.json
+logs/
 *.log

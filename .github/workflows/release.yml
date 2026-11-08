@@ -18,55 +18,73 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check PowerShell syntax
-        shell: powershell
-        run: |
-          $bad = 0
-          foreach ($f in Get-ChildItem -Recurse -Filter *.ps1) {
-            $tokens = $null; $errors = $null
-            [void][Management.Automation.Language.Parser]::ParseFile($f.FullName, [ref]$tokens, [ref]$errors)
-            foreach ($e in $errors) { Write-Host "::error file=$($f.Name),line=$($e.Extent.StartLineNumber)::$($e.Message)"; $bad++ }
-            $bom = [IO.File]::ReadAllBytes($f.FullName)[0..2] -join ','
-            if ($bom -ne '239,187,191') { Write-Host "::error file=$($f.Name)::File must be saved as UTF-8 with BOM (Windows PowerShell 5.1)"; $bad++ }
-          }
-          if ($bad) { exit 1 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
 
       - name: Determine version
         id: version
-        shell: powershell
+        shell: pwsh
         run: |
+          $v = (Get-Content package.json -Raw | ConvertFrom-Json).version
           if ($env:GITHUB_REF_TYPE -eq 'tag') {
-            $v = $env:GITHUB_REF_NAME.TrimStart('v')
-            $inScript = [regex]::Match((Get-Content PCCleaner.ps1 -Raw), "\`$Version = '([^']+)'").Groups[1].Value
-            if ($inScript -ne $v) { Write-Host "::error::Tag v$v does not match `$Version = '$inScript' in PCCleaner.ps1"; exit 1 }
-          } else {
-            $v = '0.0.0-dev'
+            $tag = $env:GITHUB_REF_NAME.TrimStart('v')
+            if ($tag -ne $v) { Write-Host "::error::Tag v$tag does not match version $v in package.json"; exit 1 }
           }
           "version=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
-      - name: Install Inno Setup
-        run: choco install innosetup --no-progress -y
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Build installer
-        shell: powershell
+      - name: Type check and tests
         run: |
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=${{ steps.version.outputs.version }}" installer\PCCleaner.iss
+          npx tsc --noEmit
+          npm test
+          cd src-tauri
+          cargo test -p pccleaner-core
+
+      # Updater artifacts (.sig) only for releases: they need the signing key from the secrets
+      - name: Build the installer
+        shell: pwsh
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          if ($env:GITHUB_REF_TYPE -eq 'tag') {
+            Set-Content -Path updater.json -Value '{"bundle":{"createUpdaterArtifacts":true}}'
+            npx tauri build --config updater.json
+          } else {
+            npx tauri build
+          }
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-      - name: Build portable zip
-        shell: powershell
+      # Release names stay as before: the website and the self-updater of the PowerShell versions
+      # (1.8.0 and older) look for PCCleaner-Setup-<version>.exe and PCCleaner-<version>-portable.zip
+      - name: Collect release files
+        shell: pwsh
         run: |
           $v = '${{ steps.version.outputs.version }}'
-          $tmp = "portable\PCCleaner"
+          $nsis = 'src-tauri\target\release\bundle\nsis'
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item "$nsis\PC Cleaner_${v}_x64-setup.exe" "dist\PCCleaner-Setup-$v.exe"
+          if (Test-Path "$nsis\PC Cleaner_${v}_x64-setup.exe.sig") {
+            Copy-Item "$nsis\PC Cleaner_${v}_x64-setup.exe.sig" "dist\PCCleaner-Setup-$v.exe.sig"
+          }
+          $tmp = 'portable\PCCleaner'
           New-Item -ItemType Directory -Force $tmp | Out-Null
-          Copy-Item PCCleaner.ps1, PCCleaner.bat, PCCleaner.ico, README.md, LICENSE, installer\Install-AI.ps1 $tmp
-          Copy-Item lib, lang $tmp -Recurse
+          Copy-Item src-tauri\target\release\PCCleaner.exe, README.md, LICENSE $tmp
           Compress-Archive -Path $tmp -DestinationPath "dist\PCCleaner-$v-portable.zip"
-          Get-ChildItem dist | ForEach-Object { "{0}  {1:N0} KB" -f $_.Name, ($_.Length / 1KB) }
 
-      - name: Extract release notes
+      - name: Release notes and latest.json
         if: github.ref_type == 'tag'
-        shell: powershell
+        shell: pwsh
         run: |
           $v = [version]'${{ steps.version.outputs.version }}'
           # Versions that were never released get their notes in this release too
@@ -79,6 +97,17 @@ jobs:
           if (@($sections).Count -eq 1) { $notes = @($sections)[0].Groups[2].Value.Trim() }
           else { $notes = (@($sections) | ForEach-Object { $_.Value.Trim() }) -join "`n`n" }
           [IO.File]::WriteAllText("$pwd\release-notes.md", $notes)
+          # latest.json for the Tauri updater; the url points at the renamed setup (the signature
+          # covers the file content, not its name)
+          $sig = (Get-Content "dist\PCCleaner-Setup-$v.exe.sig" -Raw).Trim()
+          $latest = [ordered]@{
+            version   = "$v"
+            notes     = $notes
+            pub_date  = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+            platforms = @{ 'windows-x86_64' = @{ signature = $sig; url = "https://github.com/Banzamel/PCCleaner/releases/download/v$v/PCCleaner-Setup-$v.exe" } }
+          }
+          [IO.File]::WriteAllText("$pwd\dist\latest.json", ($latest | ConvertTo-Json -Depth 5))
+          Get-ChildItem dist | ForEach-Object { "{0}  {1:N0} KB" -f $_.Name, ($_.Length / 1KB) }
 
       - uses: actions/upload-artifact@v4
         with:
