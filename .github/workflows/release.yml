@@ -109,12 +109,17 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: PCCleaner-${{ steps.version.outputs.version }}
-          path: dist/*
+          path: |
+            dist/PCCleaner-Setup-*.exe
+            dist/latest.json
 
+      # Files by name: dist/ also holds the built window (index.html, assets/) from vite.
       - name: Publish GitHub release
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
           name: PC Cleaner ${{ steps.version.outputs.version }}
           body_path: release-notes.md
-          files: dist/*
+          files: |
+            dist/PCCleaner-Setup-*.exe
+            dist/latest.json
