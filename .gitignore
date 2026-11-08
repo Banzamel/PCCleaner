@@ -6,7 +6,9 @@ src-tauri/target/
 src-tauri/gen/
 
 # Local runtime files (AI engine and models next to a dev build)
-ai/
-config.json
-logs/
+/ai/
+/src-tauri/ai/
+/config.json
+/logs/
 *.log
+/data/
