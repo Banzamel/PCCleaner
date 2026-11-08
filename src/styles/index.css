@@ -1,0 +1,11 @@
+/* PC Cleaner styles: tokens per theme, then base, controls and one file per page area. */
+@import './tokens.css';
+@import './base.css';
+@import './controls.css';
+@import './nav.css';
+@import './overview.css';
+@import './plan.css';
+@import './cleanup.css';
+@import './lists.css';
+@import './chat.css';
+@import './settings.css';

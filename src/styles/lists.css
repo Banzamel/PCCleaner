@@ -1,0 +1,25 @@
+/* What takes up space, startup apps, drivers and the log. */
+.toolbar-card { display: flex; align-items: center; gap: 12px; padding: 14px 14px 14px 20px; }
+.toolbar-card select { width: 300px; }
+.field-label { font-weight: 600; }
+.analysis-row { display: grid; grid-template-columns: 84px 100px 1fr; gap: 16px; align-items: center; padding: 8px 18px; border-top: 1px solid var(--line); min-height: 54px; }
+.analysis-row .num { text-align: right; }
+.analysis-row .row-main { cursor: default; }
+.startup-row { display: grid; grid-template-columns: 50px 1fr 170px 44px 48px; gap: 0 10px; align-items: center; padding: 8px 20px; border-top: 1px solid var(--line); min-height: 74px; }
+.initial { width: 36px; height: 36px; border-radius: 9px; color: #fff; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
+.startup-row .row-main { cursor: default; }
+.startup-name { display: flex; align-items: center; gap: 8px; }
+.startup-source { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bin { width: 32px; height: 32px; border-radius: 8px; border: 0; background: none; color: var(--text-dim); cursor: pointer; }
+.bin:hover { background: var(--tile); }
+.bin.tone-warning { color: var(--warning); }
+.driver-row { display: grid; grid-template-columns: 38px 1fr 90px 130px; align-items: center; padding: 8px 20px; border-top: 1px solid var(--line); min-height: 74px; }
+.driver-row.problem { grid-template-columns: 46px 1fr; min-height: 58px; }
+.log-page .log-card { flex: 1; min-height: 0; overflow: auto; margin-bottom: 14px; }
+.log-card pre { margin: 0; font-family: Consolas, monospace; font-size: calc(12.6px + var(--font-plus)); white-space: pre; user-select: text; }
+.log-gray { color: var(--log-gray); }
+.log-darkGray { color: var(--log-dark-gray); }
+.log-white { color: var(--log-white); font-weight: 600; }
+.log-green { color: var(--log-green); }
+.log-yellow { color: var(--log-yellow); }
+.log-cyan { color: var(--log-cyan); }

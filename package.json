@@ -1,0 +1,44 @@
+{
+  "name": "pccleaner",
+  "productName": "PC Cleaner",
+  "version": "1.8.0",
+  "description": "Smart Windows cleanup with a local AI assistant: scan, review the plan with sizes, clean only after you confirm.",
+  "type": "module",
+  "author": "Rafał Polak (Banzamel)",
+  "license": "MIT",
+  "homepage": "https://github.com/Banzamel/PCCleaner#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Banzamel/PCCleaner.git"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "tauri": "tauri",
+    "start": "tauri dev",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "icon": "tauri icon PCCleaner.ico -o src-tauri/icons",
+    "dist": "bash docker/build.sh"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.12.4",
+    "@tauri-apps/plugin-dialog": "^2.8.4",
+    "@tauri-apps/plugin-opener": "^2.7.2",
+    "@tauri-apps/plugin-process": "^2.4.0",
+    "@tauri-apps/plugin-updater": "^2.14.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.4",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.2.1",
+    "typescript": "~5.9.3",
+    "vite": "^8.3.6",
+    "vitest": "^5.1.0"
+  }
+}

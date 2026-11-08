@@ -1,0 +1,30 @@
+/* Cleanup plan: tabs, toolbar, columns, groups and rows. */
+.tab-bar, .toolbar { display: flex; align-items: center; gap: 12px; }
+.search { display: flex; align-items: center; gap: 8px; background: var(--card); border-radius: 10px; padding: 0 12px; width: 300px; height: 40px; color: var(--text-dim); }
+.search input { border: 0; background: none; flex: 1; padding: 0; outline: none; }
+.plan-list { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.plan-columns { display: grid; grid-template-columns: 80px 1fr 190px 110px; padding: 0 18px; border-bottom: 1px solid var(--border); height: 34px; }
+.plan-columns button { grid-row: 1; border: 0; background: none; text-align: left; font: inherit; font-size: 11.5px; font-weight: 600; color: var(--text-dim); cursor: pointer; }
+.plan-columns button.on { color: var(--accent-text); }
+.plan-columns .col-name { grid-column: 2; }
+.plan-columns .col-size { grid-column: 3; }
+.plan-columns .col-confidence { grid-column: 4; }
+.group-header { width: 100%; display: flex; justify-content: space-between; border: 0; background: none; color: var(--accent-text); font: inherit; font-weight: 600; padding: 14px 18px 6px; cursor: pointer; text-align: left; }
+.plan-row { display: grid; grid-template-columns: 34px 46px 1fr 190px 110px; align-items: center; padding: 8px 18px; border-top: 1px solid var(--line); min-height: 60px; }
+.plan-row:hover, .driver-row:hover, .startup-row:hover, .analysis-row:hover { background: var(--row); }
+.badge { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; }
+.badge-accent { background: var(--accent-light); color: var(--accent-text); }
+.badge-warn { background: var(--warn-back); color: var(--warn-text); }
+.badge-blue { background: var(--blue-back); color: var(--blue-text); }
+.badge-ok { background: var(--ok-back); color: var(--ok-text); }
+.badge-purple { background: var(--purple-back); color: var(--purple-text); }
+.row-main { display: flex; flex-direction: column; min-width: 0; border: 0; background: none; color: var(--text); text-align: left; font: inherit; padding: 0 12px 0 0; cursor: pointer; }
+.row-main > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row-size { display: grid; grid-template-columns: 100px 90px; align-items: center; }
+.row-size strong { text-align: right; }
+.row-conf { padding-left: 16px; }
+.row-details { grid-column: 3 / -1; padding: 8px 0 4px; display: flex; flex-direction: column; gap: 3px; color: var(--text-dim); user-select: text; white-space: pre-wrap; }
+.row-details p:first-child { color: var(--text); font-weight: 600; }
+.plan-footer { display: flex; align-items: center; gap: 10px; padding: 14px 14px 14px 20px; margin-bottom: 14px; }
+.footer-texts { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.footer-texts > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

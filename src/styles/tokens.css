@@ -1,0 +1,36 @@
+/* Colours of the old window (lib/Gui/Theme.ps1): light and dark palettes. */
+:root,
+:root[data-theme='light'] {
+  --background: #f3f4f8; --card: #ffffff; --tile: #f6f7fb; --border: #e2e5ee; --button-border: #d5d9e4; --line: #f0f1f5;
+  --text: #1f2333; --text-dim: #4b5161; --row: #f8f9fc;
+  --accent: #2563eb; --accent-hover: #1d4ed8; --accent-pressed: #1e40af; --accent-light: #eef2ff; --accent-light-hover: #e0e7ff; --accent-text: #1d4ed8;
+  --green: #16a34a; --green-hover: #15803d; --warning: #b45309; --red: #b91c1c; --ai: #0f5e59;
+  --track: #eef0f5; --grey-bar: #a3a9b8; --field: #b8bdc9; --toggle-off: #b8bdc9; --tile-protected: #6b7280;
+  --disabled: #e5e7eb; --text-disabled: #9ca3af; --segment: #e6e8ef; --segment-selected: #ffffff;
+  --nav-back: #161a2b; --nav-hover: #222740; --nav-selected: #2b3254; --nav-text: #c3c8da; --nav-dim: #a7aec6;
+  --note-back: #fffbeb; --note-border: #fde68a; --note-text: #78350f;
+  --success-back: #f0fdf4; --success-border: #bbf7d0; --success-text: #166534;
+  --ok-back: #dcfce7; --ok-text: #166534; --warn-back: #fef3c7; --warn-text: #92400e; --error-back: #fee2e2; --error-text: #991b1b;
+  --neutral-back: #eef0f5; --neutral-text: #4b5160; --purple-back: #f3e8ff; --purple-text: #6b21a8; --blue-back: #e0f2fe; --blue-text: #075985;
+  --log-gray: #374151; --log-dark-gray: #9ca3af; --log-white: #111827; --log-green: #16a34a; --log-yellow: #b45309; --log-cyan: #2563eb;
+  --font-plus: 0px;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --background: #0f1220; --card: #181c2c; --tile: #20253a; --border: #262b40; --button-border: #343a55; --line: #20253a;
+  --text: #eef0f6; --text-dim: #bcc2d4; --row: #1d2133;
+  --accent: #3b82f6; --accent-hover: #2563eb; --accent-pressed: #1d4ed8; --accent-light: #1e2a4d; --accent-light-hover: #25345f; --accent-text: #bfd0ff;
+  --green: #22c55e; --green-hover: #16a34a; --warning: #f59e0b; --red: #ef4444; --ai: #5eead4;
+  --track: #2a3048; --grey-bar: #5a6380; --field: #5a6380; --toggle-off: #3a4160; --tile-protected: #4b5563;
+  --disabled: #2a3048; --text-disabled: #5b6378; --segment: #20253a; --segment-selected: #2f3652;
+  --nav-back: #0a0c17; --nav-hover: #151933; --nav-selected: #1e2440; --nav-text: #d3d7e5; --nav-dim: #b4bacd;
+  --note-back: #2a2410; --note-border: #4a3b12; --note-text: #fcd34d;
+  --success-back: #0f2a1c; --success-border: #14532d; --success-text: #86efac;
+  --ok-back: #12301f; --ok-text: #86efac; --warn-back: #3a2e12; --warn-text: #fcd34d; --error-back: #3a1618; --error-text: #fca5a5;
+  --neutral-back: #2a3048; --neutral-text: #a3a9bd; --purple-back: #2e1f45; --purple-text: #d8b4fe; --blue-back: #0c2a3a; --blue-text: #7dd3fc;
+  --log-gray: #c9cdd8; --log-dark-gray: #7c8399; --log-white: #f3f4f8; --log-green: #4ade80; --log-yellow: #fbbf24; --log-cyan: #93b4ff;
+  /* Light text on a dark background looks thinner, so the dark theme uses text half a point larger */
+  --font-plus: 0.67px;
+  color-scheme: dark;
+}

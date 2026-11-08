@@ -1,0 +1,10 @@
+/* AI assistant chat. */
+.chat-card { flex: 1; min-height: 0; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; user-select: text; }
+.chat-welcome { white-space: pre-line; }
+.chat-msg strong { display: block; margin-bottom: 2px; }
+.chat-msg p { white-space: pre-wrap; }
+.chat-you strong { color: var(--accent); }
+.chat-ai strong { color: var(--ai); }
+.chat-note { color: var(--text-dim); }
+.chat-input { display: flex; gap: 10px; padding: 10px 10px 10px 20px; margin-bottom: 14px; }
+.chat-input input { flex: 1; border: 0; background: none; outline: none; font-size: 14px; }

@@ -1,0 +1,14 @@
+/* Settings page. */
+.settings-card { flex: 1; min-height: 0; overflow-y: auto; padding: 12px 22px; }
+.settings-row { display: flex; gap: 24px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.settings-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.settings-control { width: 300px; flex: none; display: flex; align-items: center; }
+.settings-control > select, .settings-control > input { width: 100%; }
+.ai-setup { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.settings-heading { margin: 22px 0 4px; }
+.scan-checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 6px 16px; padding: 8px 0 14px; }
+.excluded { display: flex; flex-direction: column; gap: 4px; padding-bottom: 12px; }
+.excluded-row { display: flex; gap: 10px; align-items: flex-start; }
+.excluded-row textarea { flex: 1; white-space: pre; }
+.settings-bottom { display: flex; align-items: center; gap: 10px; padding-bottom: 14px; }
+.settings-bottom > span { flex: 1; }
