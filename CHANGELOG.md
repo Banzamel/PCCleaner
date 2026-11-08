@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 2.0.1 (2026-11-08)
+
 - **The program's own title bar instead of the Windows one**, the same as in LoL Helper and WinRate: the icon and name
   on the left (moved there from the navigation bar), sharp Windows 11-style minimize, maximize/restore and close
   buttons on the right. Drag it to move the window, double-click to maximize; the X behaves as before (hides to the

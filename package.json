@@ -1,7 +1,7 @@
 {
   "name": "pccleaner",
   "productName": "PC Cleaner",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Smart Windows cleanup with a local AI assistant: scan, review the plan with sizes, clean only after you confirm.",
   "type": "module",
   "author": "Rafał Polak (Banzamel)",
