@@ -102,13 +102,6 @@ cannot be removed, the installer stops and changes nothing. The update button of
 The installer is not code-signed, so Windows SmartScreen may show a warning on the first run
 (*More info → Run anyway*).
 
-### Portable
-
-Download `PCCleaner-<version>-portable.zip`, extract it anywhere and run `PCCleaner.exe` (Microsoft Edge WebView2,
-built into Windows 10 and 11, is required). The AI assistant can be installed from *Settings* the same way; it goes
-into an `ai` subfolder next to the program, and the settings and logs into `data`. The portable version does not update itself: the update button opens the
-Releases page.
-
 ### Requirements
 
 - Windows 10 or 11 (64-bit) with Microsoft Edge WebView2 (built in; the installer adds it when missing).
@@ -283,8 +276,8 @@ git tag -a v2.0.0 -m "PC Cleaner 2.0.0"
 git push origin main --tags
 ```
 
-The workflow fails if the tag does not match `package.json`. It publishes `PCCleaner-Setup-<version>.exe`, its `.sig`,
-`latest.json` (for the updater) and `PCCleaner-<version>-portable.zip`.
+The workflow fails if the tag does not match `package.json`. It publishes `PCCleaner-Setup-<version>.exe`
+and `latest.json` (for the updater, with the signature inside).
 
 ## License
 

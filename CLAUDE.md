@@ -69,4 +69,4 @@ setup/update and the Start menu/desktop shortcuts. Default install folder `<syst
 ## Release
 
 Version source: `package.json` (`tauri.conf.json` reads it). Update `CHANGELOG.md`, then tag `v<version>`;
-the workflow checks that the tag matches and publishes the setup, `.sig`, `latest.json` and the portable zip.
+the workflow checks that the tag matches and publishes the setup and `latest.json` (the signature is inside it; no `.sig`, no portable zip).

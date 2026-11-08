@@ -66,7 +66,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       # Release names stay as before: the website and the self-updater of the PowerShell versions
-      # (1.8.0 and older) look for PCCleaner-Setup-<version>.exe and PCCleaner-<version>-portable.zip
+      # (1.8.0 and older) look for PCCleaner-Setup-<version>.exe. Only the setup and latest.json are
+      # published: the signature goes into latest.json, so the .sig file stays out of dist.
       - name: Collect release files
         shell: pwsh
         run: |
@@ -75,12 +76,8 @@ jobs:
           New-Item -ItemType Directory -Force dist | Out-Null
           Copy-Item "$nsis\PC Cleaner_${v}_x64-setup.exe" "dist\PCCleaner-Setup-$v.exe"
           if (Test-Path "$nsis\PC Cleaner_${v}_x64-setup.exe.sig") {
-            Copy-Item "$nsis\PC Cleaner_${v}_x64-setup.exe.sig" "dist\PCCleaner-Setup-$v.exe.sig"
+            Copy-Item "$nsis\PC Cleaner_${v}_x64-setup.exe.sig" "setup.sig"
           }
-          $tmp = 'portable\PCCleaner'
-          New-Item -ItemType Directory -Force $tmp | Out-Null
-          Copy-Item src-tauri\target\release\PCCleaner.exe, README.md, LICENSE $tmp
-          Compress-Archive -Path $tmp -DestinationPath "dist\PCCleaner-$v-portable.zip"
 
       - name: Release notes and latest.json
         if: github.ref_type == 'tag'
@@ -99,7 +96,7 @@ jobs:
           [IO.File]::WriteAllText("$pwd\release-notes.md", $notes)
           # latest.json for the Tauri updater; the url points at the renamed setup (the signature
           # covers the file content, not its name)
-          $sig = (Get-Content "dist\PCCleaner-Setup-$v.exe.sig" -Raw).Trim()
+          $sig = (Get-Content "setup.sig" -Raw).Trim()
           $latest = [ordered]@{
             version   = "$v"
             notes     = $notes
