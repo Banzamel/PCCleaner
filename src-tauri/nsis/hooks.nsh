@@ -21,7 +21,7 @@
   ${EndIf}
   ${If} $R8 != ""
     DetailPrint "PC Cleaner (PowerShell) -> PC Cleaner"
-    ; The install folder from the uninstaller path when InstallLocation is missing; always with a trailing \
+    ; The install folder from the uninstaller path when InstallLocation is missing; always with a trailing backslash
     ${If} $R9 == ""
       StrCpy $R6 $R8 "" 1
       StrCpy $R6 $R6 -1

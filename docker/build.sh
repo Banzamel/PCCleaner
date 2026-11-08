@@ -22,6 +22,12 @@ docker run --rm \
   -w /app \
   tauri-build bash -c '
     set -euo pipefail
+    # The Tauri CLI on a Linux host looks for an appindicator library whenever the tray feature is on,
+    # even for a Windows target (through pkg-config); a placeholder satisfies the check (it is never loaded)
+    PC=/usr/lib/x86_64-linux-gnu/pkgconfig
+    mkdir -p "$PC"
+    printf "libdir=/usr/lib/x86_64-linux-gnu\nName: ayatana-appindicator3-0.1\nDescription: placeholder\nVersion: 0.5.92\nLibs: -L\${libdir}\n" > "$PC/ayatana-appindicator3-0.1.pc"
+    touch /usr/lib/x86_64-linux-gnu/libayatana-appindicator3.so.1
     npm ci --no-audit --no-fund
     npm test
     (cd src-tauri && cargo test -p pccleaner-core)
