@@ -22,8 +22,13 @@ FunctionEnd
 
 !macro NSIS_HOOK_PREINSTALL
   SetShellVarContext current
-  ; A silent install skips the pages, so the folder is checked here too
+  ; A silent install skips the pages, so the folder is checked here too. The template has already
+  ; created Tauri's default folder (SetOutPath); remove it again when it stays empty.
+  StrCpy $PccOrigDir $INSTDIR
   Call PccFixInstDir
+  ${If} $PccOrigDir != $INSTDIR
+    RMDir $PccOrigDir
+  ${EndIf}
   SetOutPath $INSTDIR
   Call PccMigrateInno
 !macroend

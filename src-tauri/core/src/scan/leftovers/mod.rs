@@ -10,6 +10,7 @@ pub mod names;
 pub mod steam;
 pub mod uninstall;
 pub mod vendor_keys;
+pub mod vendor_rules;
 
 use crate::ctx::Ctx;
 use crate::fs::measure;

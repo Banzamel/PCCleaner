@@ -13,6 +13,12 @@
   installer. It still goes into the program folder (`ai\`) and runs on the private port 11435.
 - **Updates are signed:** the program downloads `latest.json` and the installer from GitHub Releases, checks the
   signature, installs and starts the new version.
+- **Fixed: registry keys of installed programs were offered as leftovers.** Programs installed with electron-builder
+  keep a key under Software named like their Apps & features entry (often a GUID, e.g.
+  `1b39727b-3969-5593-8eba-cc072b4b0548`) with their install folder in it; 1.8.0 listed such keys as "vendor key with
+  no installed program" and removing them broke those programs' uninstallers. A key is no longer a leftover when its
+  name matches an Apps & features entry (with or without braces and `_is1`) or one of its values points to an existing
+  folder or file, and keys with a GUID name are never ticked in advance.
 - **Deletion reports every file it could not delete** (in use, no permission) in the log, not just a count.
 - Command-line parameters are `--preview`, `--no-ai`, `--model`, `--drives`, `--language`, `--no-update-check` and
   `--auto-clean`; the old forms (`-Preview`, `-Podglad`, `-BezLLM`, `-Dyski`...) still work.

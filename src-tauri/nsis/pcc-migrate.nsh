@@ -5,6 +5,9 @@
 !define PCC_TASK "PC Cleaner - automatic cleaning"
 !define PCC_OLD_DATA "$LOCALAPPDATA\PCCleaner"
 
+; Tauri's default folder as the template set it, before PccFixInstDir redirects the install
+Var PccOrigDir
+
 ; Out: $R4 = UninstallString of the PowerShell version ("" when it is not installed),
 ;      $R5 = its folder without the trailing backslash
 Function PccOldDir
