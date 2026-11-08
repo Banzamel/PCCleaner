@@ -1,0 +1,13 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "The main window: updater, restart after an update, folder picker for excluded folders.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-theme",
+    "updater:default",
+    "process:allow-restart",
+    "dialog:allow-open"
+  ]
+}
