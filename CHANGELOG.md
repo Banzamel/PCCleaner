@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 2.0.0 (2026-11-08)
+
 - **A new program under the hood: Tauri (Rust) + React instead of PowerShell + WinForms.** The pages, the plan rules,
   the cleanup categories, the safety checks, the AI assistant, the languages and the settings are the same; the
   window starts faster, scans run in native code and the window never freezes while working.
