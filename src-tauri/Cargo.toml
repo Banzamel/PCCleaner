@@ -1,0 +1,37 @@
+[package]
+name = "pccleaner"
+version = "0.0.0"
+description = "PC Cleaner - smart Windows cleanup with a local AI assistant"
+authors = ["Rafał Polak (Banzamel)"]
+license = "MIT"
+edition = "2021"
+publish = false
+
+[lib]
+name = "pccleaner_lib"
+crate-type = ["rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+pccleaner-core = { path = "core" }
+tauri = { version = "2", features = ["tray-icon", "image-ico"] }
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-notification = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+
+[workspace]
+members = ["core"]
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "unwind"
+strip = true
