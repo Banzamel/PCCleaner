@@ -14,6 +14,10 @@
   --neutral-back: #eef0f5; --neutral-text: #4b5160; --purple-back: #f3e8ff; --purple-text: #6b21a8; --blue-back: #e0f2fe; --blue-text: #075985;
   --log-gray: #374151; --log-dark-gray: #9ca3af; --log-white: #111827; --log-green: #16a34a; --log-yellow: #b45309; --log-cyan: #2563eb;
   --font-plus: 0px;
+  /* Title bar (layout in shared/ui/titlebar/titlebar.css): dark like the navigation in both themes */
+  --titlebar-bg: var(--nav-back); --titlebar-line: var(--nav-back); --titlebar-text: #fff; --titlebar-button: var(--nav-text);
+  --titlebar-button-hover: var(--nav-hover); --titlebar-button-hover-text: #fff; --titlebar-button-press: var(--nav-selected);
+  --window-border: #8a90a3;
   color-scheme: light;
 }
 
@@ -32,5 +36,8 @@
   --log-gray: #c9cdd8; --log-dark-gray: #7c8399; --log-white: #f3f4f8; --log-green: #4ade80; --log-yellow: #fbbf24; --log-cyan: #93b4ff;
   /* Light text on a dark background looks thinner, so the dark theme uses text half a point larger */
   --font-plus: 0.67px;
+  --titlebar-bg: var(--nav-back); --titlebar-line: var(--nav-back); --titlebar-text: #fff; --titlebar-button: var(--nav-text);
+  --titlebar-button-hover: var(--nav-hover); --titlebar-button-hover-text: #fff; --titlebar-button-press: var(--nav-selected);
+  --window-border: #343a55;
   color-scheme: dark;
 }

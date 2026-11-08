@@ -2642,6 +2642,7 @@ dependencies = [
  "tauri-plugin-opener",
  "tauri-plugin-process",
  "tauri-plugin-updater",
+ "windows-version",
 ]
 
 [[package]]

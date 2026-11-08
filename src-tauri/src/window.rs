@@ -6,11 +6,25 @@ use crate::state::AppState;
 use crate::tray;
 
 /// Creates the main window from tauri.conf.json with its WebView2 profile in `<program>\data\webview`
-/// (by default WebView2 would keep it in %LOCALAPPDATA%\<identifier>).
+/// (by default WebView2 would keep it in %LOCALAPPDATA%\<identifier>). Frameless: the window draws
+/// its own title bar.
 pub fn create(app: &AppHandle) -> tauri::Result<WebviewWindow> {
     let st = app.state::<AppState>();
     let config = app.config().app.windows.iter().find(|w| w.label == "main").cloned().unwrap_or_default();
-    tauri::WebviewWindowBuilder::from_config(app, &config)?.data_directory(st.data.webview()).build()
+    tauri::WebviewWindowBuilder::from_config(app, &config)?.shadow(native_frame()).data_directory(st.data.webview()).build()
+}
+
+/// Windows 11 gives the frameless window its border, shadow and rounded corners through Tauri's
+/// window shadow. On Windows 10 that frame has no top edge, so it stays off and the page draws a
+/// 1px border on all four sides instead (src/shared/ui/titlebar).
+#[cfg(windows)]
+fn native_frame() -> bool {
+    windows_version::OsVersion::current().build >= 22000
+}
+
+#[cfg(not(windows))]
+fn native_frame() -> bool {
+    false
 }
 
 /// Restores size and position from window.json when the window lands on a connected monitor;

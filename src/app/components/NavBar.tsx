@@ -1,4 +1,3 @@
-import icon from '../../../docs/icon.png'
 import { useT } from '../../shared/i18n/useT'
 import { Button } from '../../shared/ui/Button'
 import { Icon, type GlyphName } from '../../shared/ui/Icon'
@@ -16,7 +15,7 @@ export const NAV: Array<{ id: PageId; label: string; icon: GlyphName }> = [
   { id: 'settings', label: 'Settings', icon: 'settings' },
 ]
 
-/** Dark navigation bar: logo, pages (Ctrl+1..8), assistant status, preview mode, update. */
+/** Dark navigation bar (the logo is in the title bar): pages (Ctrl+1..8), assistant status, preview mode, update. */
 export function NavBar() {
   const tr = useT()
   const { ui, update } = useServices()
@@ -27,10 +26,6 @@ export function NavBar() {
   const busy = useUi((s) => s.busy)
   return (
     <nav className="nav">
-      <div className="logo">
-        <img src={icon} alt="" />
-        <span>PC Cleaner</span>
-      </div>
       {cleaning ? (
         <p className="nav-info">{tr.t('Cleaning in progress. Navigation comes back when it finishes.')}</p>
       ) : (

@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { AppContext } from './app/AppContext'
 import { afterStart, boot } from './app/boot'
 import { App } from './app/components/App'
+import { AppTitleBar } from './app/components/AppTitleBar'
 import './styles/index.css'
 
 const root = createRoot(document.getElementById('root') as HTMLElement)
@@ -20,5 +21,10 @@ boot()
     afterStart(store, services)
   })
   .catch((e: unknown) => {
-    root.render(<pre className="boot-error">PC Cleaner could not start: {JSON.stringify(e)}</pre>)
+    root.render(
+      <>
+        <AppTitleBar />
+        <pre className="boot-error">PC Cleaner could not start: {JSON.stringify(e)}</pre>
+      </>,
+    )
   })

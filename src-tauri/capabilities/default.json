@@ -1,11 +1,15 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "The main window: updater, restart after an update, folder picker for excluded folders.",
+  "description": "The main window: its own title bar (minimize, maximize, close, dragging), updater, restart after an update, folder picker for excluded folders.",
   "windows": ["main"],
   "permissions": [
     "core:default",
     "core:window:allow-set-theme",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-close",
+    "core:window:allow-start-dragging",
     "updater:default",
     "process:allow-restart",
     "dialog:allow-open"

@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+- **The program's own title bar instead of the Windows one**, the same as in LoL Helper and WinRate: the icon and name
+  on the left (moved there from the navigation bar), sharp Windows 11-style minimize, maximize/restore and close
+  buttons on the right. Drag it to move the window, double-click to maximize; the X behaves as before (hides to the
+  notification area when Settings say so, waits while cleaning). On Windows 10 the window has a thin border on all four
+  sides (Windows 11 draws its own border, shadow and rounded corners); a maximized window has no border.
+
 ## 2.0.0 (2026-11-08)
 
 - **A new program under the hood: Tauri (Rust) + React instead of PowerShell + WinForms.** The pages, the plan rules,

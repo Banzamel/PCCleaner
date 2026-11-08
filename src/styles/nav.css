@@ -1,7 +1,5 @@
 /* The dark navigation bar on the left. */
-.nav { width: 240px; flex: none; background: var(--nav-back); color: var(--nav-text); padding: 20px 12px 14px; display: flex; flex-direction: column; }
-.logo { display: flex; align-items: center; gap: 10px; padding: 4px 6px 20px; color: #fff; font-size: 17px; font-weight: 600; }
-.logo img { width: 36px; height: 36px; }
+.nav { width: 240px; flex: none; background: var(--nav-back); color: var(--nav-text); padding: 14px 12px; display: flex; flex-direction: column; }
 .nav-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .nav-list button { width: 100%; height: 44px; display: flex; align-items: center; gap: 14px; padding: 0 16px; border: 0; border-radius: 8px; background: none; color: var(--nav-text); font: inherit; font-size: 14px; text-align: left; cursor: pointer; position: relative; }
 .nav-list button:hover { background: var(--nav-hover); }
